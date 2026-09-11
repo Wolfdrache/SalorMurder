@@ -5,11 +5,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.salormurder.manager.FileManager;
+import com.wolfdrache.salormurder.manager.MapManager;
+import com.wolfdrache.salormurder.manager.RoundManager;
 
 public class SalorMurder extends JavaPlugin {
 
     private Economy economy;
     private MurderKnfesAPI murderKnfes;
+
+    private FileManager fileManager;
+    private MapManager mapManager;
+    private RoundManager roundManager;
 
     @Override
     public void onEnable(){
@@ -23,7 +30,10 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        
+        fileManager = new FileManager(this);
+        mapManager = new MapManager(fileManager);
+        roundManager = new RoundManager(murderKnfes, mapManager, fileManager);
+
         getLogger().info("SalorMurder has been enabled!");
     }
     
