@@ -1,0 +1,12 @@
+*.class
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+target/maven-status/*
+target/maven-archiver/pom.properties
+target/classes/plugin.yml
+target/

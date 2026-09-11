@@ -1,0 +1,7 @@
+name: MurderKnifes
+version: ${project.version}
+main: com.wolfdrache.salormurder.SalorMurder
+api-version: 1.19
+description: A underwater murder plugin for Minecraft 1.19.3
+author: Wolfdrache
+depend: [Vault, MurderKnifes]
