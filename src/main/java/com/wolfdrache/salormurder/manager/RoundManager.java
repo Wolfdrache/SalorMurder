@@ -294,7 +294,19 @@ public class RoundManager {
     }
 
     public void killPlayer(Player player, RoundSM round) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'killPlayer'");
+        PlayerSM playerSM = round.players.get(player);
+        PlayerStats stats = statsManager.getPlayerStats(player);
+        if (playerSM.role == Role.MURDERER) {
+            stats.roundsLostMurderer++;
+        } else {
+            stats.roundsLostInnocent++;
+        }
+        playerSM.mode = PlayerMode.SPECTATING;
+        giveItems(player);
+        checkEndRound(round);
+    }
+
+    public List<RoundSM> getRounds() {
+        return new ArrayList<>(rounds);
     }
 }

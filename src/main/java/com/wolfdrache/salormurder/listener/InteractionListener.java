@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.RoundManager;
+import com.wolfdrache.salormurder.models.PlayerSM;
+import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 
@@ -39,6 +41,18 @@ public class InteractionListener implements Listener {
             event.setCancelled(true);
             murderKnfes.openKnifeSelector(player);
             return;
+        }
+    }
+
+    @EventHandler 
+    public void onNonAliveInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode != PlayerMode.PLAYING) {
+            event.setCancelled(true);
         }
     }
 }

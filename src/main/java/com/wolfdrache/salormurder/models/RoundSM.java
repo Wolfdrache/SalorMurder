@@ -1,5 +1,6 @@
 package com.wolfdrache.salormurder.models;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,5 +46,12 @@ public class RoundSM {
 
     public boolean hasPlayers() {
         return !players.isEmpty();
+    }
+
+    public Collection<Player> getPlayersByMode(PlayerMode mode) {
+        return players.entrySet().stream()
+            .filter(entry -> entry.getValue().mode == mode)
+            .map(Map.Entry::getKey)
+            .toList();
     }
 }
