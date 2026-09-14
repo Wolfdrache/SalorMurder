@@ -1,0 +1,11 @@
+UUID:
+  name: PlayerName
+  killedDetectives: 0
+  killedInnocents: 0
+  murderersKilled: 0
+  roundsWonMurderer: 0
+  roundsWonInnocent: 0
+  roundsLostMurderer: 0
+  roundsLostInnocent: 0
+  randomKills: 0
+  coins: 0

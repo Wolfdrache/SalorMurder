@@ -22,4 +22,8 @@ public class MapSM {
         this.spawnpoints = spawnpoints;
         this.lootchests = lootchests;
     }
+
+    public int getMaxPlayers() {
+        return spawnpoints.size();
+    }
 }

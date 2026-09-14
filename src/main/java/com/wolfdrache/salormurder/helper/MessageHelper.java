@@ -62,4 +62,11 @@ public class MessageHelper {
             p.playSound(p.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.0f);
         }
     }
+
+    public static void detectiveKilled(RoundSM round) {
+        String message = "§cDer Detektiv wurde getötet!";
+        for (Player p : round.players.keySet()) {
+            sendMessage(p, message);
+        }
+    }
 }

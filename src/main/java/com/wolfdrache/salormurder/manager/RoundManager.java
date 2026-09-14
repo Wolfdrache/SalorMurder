@@ -13,32 +13,52 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
-
+import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.models.MapSM;
 import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.RoundSM;
+import com.wolfdrache.salormurder.models.ConfigModes.Coins;
 import com.wolfdrache.salormurder.models.ConfigModes.Time;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.PlayerSM.Role;
+import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.timer.RoundTimer;
 
 public class RoundManager {
     private final MurderKnfesAPI murderKnifes;
-
+    
     private final MapManager mapManager;
+    private final StatsManager statsManager;
+    private final CoinManager coinManager;
     private final FileManager fileManager;
+    
+    private JoinSignManager joinSignManager;
+    private RoundTimer roundTimer;
+
+    private final Location waitingLobby;
 
     private final List<RoundSM> rounds = new ArrayList<>();
     private final Map<Player, RoundSM> activePlayers = new HashMap<>();
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(MurderKnfesAPI murderKnifes, MapManager mapManager, FileManager fileManager) {
+    public RoundManager(MurderKnfesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
+        this.statsManager = statsManager;
+        this.coinManager = coinManager;
         this.fileManager = fileManager;
 
+        this.waitingLobby = fileManager.getLobbyLocation();
+
         createAllRounds();
+    }
+
+    public void setExtras(JoinSignManager joinSignManager, RoundTimer roundTimer) {
+        this.joinSignManager = joinSignManager;
+        this.roundTimer = roundTimer;
     }
 
     private void createAllRounds() {
@@ -56,13 +76,36 @@ public class RoundManager {
         if (round.mode == RoundMode.WAITING && round.hasFreeSlot()) {
             if (!round.hasPlayers()) {
                 round.time = fileManager.getTime(Time.LOBBY);
+                roundTimer.startTimer(round);
             }
+            player.teleport(waitingLobby);
+            round.addPlayer(player);
+            activePlayers.put(player, round);
+            giveItems(player);
+            joinSignManager.updateSign(round);
         }
     }
 
     public void leavePlayer(Player player) {
-        if (activePlayers.containsKey(player)) {
-            activePlayers.remove(player);
+        if (!activePlayers.containsKey(player)) return;
+        RoundSM round = activePlayers.get(player);
+        PlayerSM playerSM = round.players.get(player);
+        round.players.remove(player);
+        activePlayers.remove(player);
+        player.teleport(fileManager.getLeaveLocation());
+        if (round.mode == RoundMode.WAITING) {
+            joinSignManager.updateSign(round);
+            if (round.players.isEmpty()) {
+                roundTimer.stopTimer(round);
+                mapManager.unloadWorld(round.map);
+                return;
+            }
+        } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
+            if (playerSM.mode == PlayerMode.PLAYING) {
+                PlayerStats playerStats = statsManager.getPlayerStats(player);
+                playerStats.addLoss(playerSM.role);
+                checkEndRound(round);
+            }
         }
     }
 
@@ -70,12 +113,87 @@ public class RoundManager {
         return round.players.size() >= fileManager.getMinPlayers();
     }
 
+    public void startCommand(RoundSM round) {
+        if (enoughPlayersToStart(round) && round.time > 6) {
+            round.time = 6; 
+        }
+    }
+
     public void startRound(RoundSM round) {
         World world = mapManager.getOrLoadWorld(round.map);
         mapManager.addWorldToMap(round.map, world);
         round.mode = RoundMode.STARTING;
-        // joinSignManager.replaceRoundSign(round);
+        joinSignManager.replaceRoundSign(round);
         spawnPlayer(round);
+    }
+
+    private void endRound(RoundSM round) {
+        round.mode = RoundMode.ENDING;
+        round.time = fileManager.getTime(Time.END);
+        announceWinner(round);
+        for (Player player : round.players.keySet()) {
+            PlayerSM playerSM = round.players.get(player);
+            playerSM.mode = PlayerMode.ENDING;
+            giveItems(player);
+        }
+    }
+
+    public void resetRound(RoundSM round) {
+        for (Player player : new ArrayList<>(round.players.keySet())) {
+            leavePlayer(player);
+        }
+        round.mode = RoundMode.WAITING;
+        round.time = fileManager.getTime(Time.LOBBY);
+        mapManager.unloadWorld(round.map);
+        roundTimer.stopTimer(round);
+        joinSignManager.giveRoundToSign(round);
+        statsManager.updateLeaderboard();
+    }
+
+    private void announceWinner(RoundSM round) {
+        Role winningRole = null;
+        for (Player player : round.players.keySet()) {
+            PlayerSM playerSM = round.players.get(player);
+            if (playerSM.mode != PlayerMode.PLAYING) continue;
+            if (playerSM.role == Role.MURDERER) {
+                winningRole = Role.MURDERER;
+                break;
+            } else {
+                winningRole = Role.INNOCENT;
+                break;
+            }
+        }
+
+        if (winningRole != null) {
+            String message;
+            if (winningRole == Role.MURDERER) {
+                message = "§cDer Mörder hat gewonnen!";
+            } else {
+                message = "§aDie Unschuldigen haben gewonnen!";
+            }
+            for (Player player : round.players.keySet()) {
+                MessageHelper.sendTitle(player, message, "");
+                PlayerSM playerSM = round.players.get(player);
+                if (playerSM.mode == PlayerMode.PLAYING && playerSM.role == winningRole) {
+                    PlayerStats playerStats = statsManager.getPlayerStats(player);
+                    playerStats.addWin(winningRole);
+                    coinManager.giveCoins(player, winningRole == Role.MURDERER ? Coins.MURDER_WIN : Coins.INNO_WIN);
+                }
+            }
+        }
+    }
+
+    private void checkEndRound(RoundSM round) {
+        boolean hasMurderer = false;
+        boolean hasInnocent = false;
+        for (PlayerSM playerSM : round.players.values()) {
+            if (playerSM.mode != PlayerMode.PLAYING) continue;
+            if (playerSM.role == Role.MURDERER) hasMurderer = true;
+            if (playerSM.role == Role.INNOCENT || playerSM.role == Role.DETECTIVE) hasInnocent = true;
+        }
+        if (!hasMurderer || !hasInnocent) {
+            endRound(round);
+        }
     }
 
     private void spawnPlayer(RoundSM round) {
@@ -100,24 +218,83 @@ public class RoundManager {
             if (playerSM.role == null) playerSM.role = Role.INNOCENT;
             playerSM.mode = PlayerMode.PLAYING;
             spawnPoints.remove(spawnLocation);
-            giveItems(playerSM.role, p);
+            giveItems(p);
         }
     }
 
-    private void giveItems(Role role, Player p) {
-        PlayerInventory inventory = p.getInventory();
+    private void giveItems(Player player) {
+        PlayerInventory inventory = player.getInventory();
         inventory.clear();
-        switch (role) {
-            case MURDERER: 
-                ItemStack knife = murderKnifes.getKnife(p);
-                inventory.setItem(4, knife);
+        RoundSM round = activePlayers.get(player);
+        PlayerSM playerSM = round.players.get(player);
+        switch (playerSM.mode) {
+            case WAITING:
+                inventory.setItem(4, NavItems.knifeSelectorItem);
+                inventory.setItem(8, NavItems.leaveItem);
                 break;
-            case DETECTIVE:
-                // give detective an trident
+            case PLAYING:
+                switch (playerSM.role) {
+                    case MURDERER:
+                        ItemStack knife = murderKnifes.getKnife(player);
+                        inventory.setItem(4, knife);
+                        break;
+                    case DETECTIVE:
+                        // give detective an trident
+                        break;
+                    case INNOCENT:
+                        // give innocent no items
+                        break;
+                }
                 break;
-            case INNOCENT:
-                // give innocent no items
+            case SPECTATING:
+                inventory.setItem(4, NavItems.spectatorTpItem);
+                inventory.setItem(8, NavItems.leaveItem);
+                break;
+            case ENDING:
+                inventory.setItem(8, NavItems.leaveItem);
+                break;
+            case EDIT:
+                // give edit mode items, e.g., a world edit wand
                 break;
         }
+    }
+
+    public List<RoundSM> getRoundsByMode(RoundMode mode) {
+        List<RoundSM> roundsByMode = new ArrayList<>();
+        for (RoundSM round : rounds) {
+            if (round.mode == mode) {
+                roundsByMode.add(round);
+            }
+        }
+        return roundsByMode;
+    }
+
+    public RoundSM getRoundByPlayer(Player player) {
+        return activePlayers.get(player);
+    }
+
+    public RoundSM getRoundByName(String name) {
+        if (name.equals("@r")) {
+            return getRandomRoundByMode(RoundMode.WAITING);
+        }
+        for (RoundSM round : rounds) {
+            if (round.map.name.equalsIgnoreCase(name)) {
+                return round;
+            }
+        }
+        return null;
+    }
+
+    private RoundSM getRandomRoundByMode(RoundMode waiting) {
+        List<RoundSM> roundsByMode = getRoundsByMode(waiting);
+        if (roundsByMode.isEmpty()) {
+            return null;
+        }
+        return roundsByMode.get(ThreadLocalRandom.current().nextInt(roundsByMode.size()));
+    }
+
+    public void killPlayer(Player player, RoundSM round) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'killPlayer'");
     }
 }

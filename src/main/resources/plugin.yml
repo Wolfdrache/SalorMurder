@@ -5,3 +5,37 @@ api-version: 1.19
 description: A underwater murder plugin for Minecraft 1.19.3
 author: Wolfdrache
 depend: [Vault, MurderKnifes]
+
+commands:
+  joinsm:
+    description: Join a salormurder round.
+    usage: /joinsm <roundName>
+  leavesm:
+    description: Leave a salormurder round.
+    usage: /leavesm
+  startsm:
+    description: Start a salormurder round.
+    usage: /startsm <roundName>
+    permission: salormurder.startsm
+  forcejoinsm:
+    description: Force join a salormurder round.
+    usage: /forcejoinsm <roundName> <playerName>
+    permission: salormurder.forcejoinsm
+  smadmin:
+    description: Admin command for salormurder.
+    usage: /smadmin <subcommand>
+    permission: salormurder.smadmin
+  statssm:
+    description: View your salormurder stats.
+    usage: /statssm
+
+permissions:
+  salormurder.startsm:
+    description: Allows the player to start a salormurder round.
+    default: false
+  salormurder.forcejoinsm:
+    description: Allows the player to force join a salormurder round.
+    default: false
+  salormurder.smadmin:
+    description: Allows the player to use admin commands for salormurder.
+    default: false

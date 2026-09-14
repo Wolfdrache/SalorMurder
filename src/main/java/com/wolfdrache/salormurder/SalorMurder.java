@@ -5,9 +5,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
-import com.wolfdrache.salormurder.manager.FileManager;
-import com.wolfdrache.salormurder.manager.MapManager;
-import com.wolfdrache.salormurder.manager.RoundManager;
+import com.wolfdrache.salormurder.commands.*;
+import com.wolfdrache.salormurder.listener.*;
+import com.wolfdrache.salormurder.manager.*;
+import com.wolfdrache.salormurder.timer.RoundTimer;
 
 public class SalorMurder extends JavaPlugin {
 
@@ -17,6 +18,11 @@ public class SalorMurder extends JavaPlugin {
     private FileManager fileManager;
     private MapManager mapManager;
     private RoundManager roundManager;
+    private StatsManager statsManager;
+    private JoinSignManager joinSignManager;
+    private CoinManager coinManager;
+
+    private RoundTimer roundTimer;
 
     @Override
     public void onEnable(){
@@ -31,8 +37,21 @@ public class SalorMurder extends JavaPlugin {
             return;
         }
         fileManager = new FileManager(this);
+        coinManager = new CoinManager(economy, fileManager);
         mapManager = new MapManager(fileManager);
-        roundManager = new RoundManager(murderKnfes, mapManager, fileManager);
+        statsManager = new StatsManager(fileManager);
+        roundManager = new RoundManager(murderKnfes, mapManager, statsManager, coinManager, fileManager);
+
+        joinSignManager = new JoinSignManager(roundManager, fileManager);
+        roundTimer = new RoundTimer(this, roundManager, fileManager);
+        roundManager.setExtras(joinSignManager, roundTimer);
+
+        getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager), this);
+        getServer().getPluginManager().registerEvents(new DamageListener(murderKnfes, roundManager, statsManager, coinManager), this);
+        getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
+
+        getCommand("startsm").setExecutor(new StartCommand(roundManager));
+        getCommand("statssm").setExecutor(new StatsCommand(statsManager));
 
         getLogger().info("SalorMurder has been enabled!");
     }

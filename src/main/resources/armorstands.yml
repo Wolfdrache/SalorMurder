@@ -1,0 +1,55 @@
+rank:
+  1: 
+    location:
+      world: world
+      position: "0 64 0"
+    headPose: "0 0 0"
+    bodyPose: "0 0 0"
+    leftArmPose: "0 0 0"
+    rightArmPose: "0 0 0"
+    leftLegPose: "0 0 0"
+    rightLegPose: "0 0 0"
+    equipment:
+      helmet: ""
+      chestplate: ""
+      leggings: ""
+      boots: ""
+      itemInMainHand: 
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_PICKAXE
+        amount: 1
+      itemInOffHand: ""
+  2: 
+    location:
+      world: world
+      position: "0 64 0"
+    headPose: "0 0 0"
+    bodyPose: "0 0 0"
+    leftArmPose: "0 0 0"
+    rightArmPose: "0 0 0"
+    leftLegPose: "0 0 0"
+    rightLegPose: "0 0 0"
+    equipment:
+      helmet: ""
+      chestplate: ""
+      leggings: ""
+      boots: ""
+      itemInMainHand: ""
+      itemInOffHand: ""
+  3: 
+    location:
+      world: world
+      position: "0 64 0"
+    headPose: "0 0 0"
+    bodyPose: "0 0 0"
+    leftArmPose: "0 0 0"
+    rightArmPose: "0 0 0"
+    leftLegPose: "0 0 0"
+    rightLegPose: "0 0 0"
+    equipment:
+      helmet: ""
+      chestplate: ""
+      leggings: ""
+      boots: ""
+      itemInMainHand: ""
+      itemInOffHand: ""

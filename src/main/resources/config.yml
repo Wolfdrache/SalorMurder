@@ -3,6 +3,7 @@ time:
   before_start: 5
   end: 30
   trident_reload: 10
+  loot_chest_refill: 30
 
 coins:
   murder_kill_detective: 10

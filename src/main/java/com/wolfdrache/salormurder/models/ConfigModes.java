@@ -5,7 +5,8 @@ public class ConfigModes {
         LOBBY,
         BEFORE_START,
         END,
-        TRIDENT_RELOAD;
+        TRIDENT_RELOAD,
+        LOOT_CHEST_REFILL;
     }
     public static enum Coins {
         MURDER_KILL_DETECTIVE,
