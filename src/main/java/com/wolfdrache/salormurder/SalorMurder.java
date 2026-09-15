@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
 import com.wolfdrache.salormurder.commands.*;
+import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.RoundTimer;
@@ -50,6 +51,8 @@ public class SalorMurder extends JavaPlugin {
         roundManager.setExtras(joinSignManager, roundTimer);
 
         teleporterGui = new TeleporterGui(roundManager);
+
+        TabHelper.setPlugin(this);
 
         getServer().getPluginManager().registerEvents(teleporterGui, this);
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager, teleporterGui), this);
