@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -82,5 +83,18 @@ public class PlayerListener implements Listener {
             return;
         }
         roundManager.checkPlayerGetTrident(player);
+    }
+
+    @EventHandler 
+    public void onPlayerMoveStarting(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.STARTING) {
+            if (event.getFrom().distance(event.getTo()) > 0.1) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 }

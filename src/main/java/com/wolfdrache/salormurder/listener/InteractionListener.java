@@ -18,14 +18,17 @@ import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.ui.TeleporterGui;
 
 public class InteractionListener implements Listener {
     private final MurderKnfesAPI murderKnfes;
     private final RoundManager roundManager;
+    private final TeleporterGui teleporterGui;
 
-    public InteractionListener(MurderKnfesAPI murderKnfes, RoundManager roundManager) {
+    public InteractionListener(MurderKnfesAPI murderKnfes, RoundManager roundManager, TeleporterGui teleporterGui) {
         this.murderKnfes = murderKnfes;
         this.roundManager = roundManager;
+        this.teleporterGui = teleporterGui;
     }
 
     @EventHandler 
@@ -44,6 +47,10 @@ public class InteractionListener implements Listener {
         } else if (item.equals(NavItems.knifeSelectorItem)) {
             event.setCancelled(true);
             murderKnfes.openKnifeSelector(player);
+            return;
+        } else if (item.equals(NavItems.spectatorTpItem)) {
+            event.setCancelled(true);
+            teleporterGui.open(player);
             return;
         }
     }

@@ -9,6 +9,7 @@ import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.RoundTimer;
+import com.wolfdrache.salormurder.ui.TeleporterGui;
 
 public class SalorMurder extends JavaPlugin {
 
@@ -23,6 +24,8 @@ public class SalorMurder extends JavaPlugin {
     private CoinManager coinManager;
 
     private RoundTimer roundTimer;
+
+    private TeleporterGui teleporterGui;
 
     @Override
     public void onEnable(){
@@ -46,7 +49,10 @@ public class SalorMurder extends JavaPlugin {
         roundTimer = new RoundTimer(this, roundManager, fileManager);
         roundManager.setExtras(joinSignManager, roundTimer);
 
-        getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager), this);
+        teleporterGui = new TeleporterGui(roundManager);
+
+        getServer().getPluginManager().registerEvents(teleporterGui, this);
+        getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager, teleporterGui), this);
         getServer().getPluginManager().registerEvents(new DamageListener(murderKnfes, roundManager, statsManager, coinManager), this);
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager), this);

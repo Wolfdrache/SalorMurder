@@ -63,10 +63,9 @@ public class MapManager {
             if (world != null) {
                 world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
                 world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
                 world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-                world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-                world.setGameRule(GameRule.NATURAL_REGENERATION, true);
+                world.setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
+                world.setGameRule(GameRule.DROWNING_DAMAGE, false);
                 world.setAutoSave(false);
             }
             return world;

@@ -16,6 +16,7 @@ import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.ConfigModes.Time;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.ui.XpBarTimer;
 
 public class RoundTimer {
     private final SalorMurder plugin;
@@ -56,11 +57,14 @@ public class RoundTimer {
             player.setSaturation(20);
             player.setFoodLevel(20);
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            player.setMaximumAir(20);
+            player.setRemainingAir(20);
         }
 
         TabHelper.updateTabList(round);
         if (round.mode == RoundMode.WAITING) {
             int lobbyTime = fileManager.getTime(Time.LOBBY);
+            XpBarTimer.updateXpBar(round, lobbyTime);
             if (!roundManager.enoughPlayersToStart(round)) {
                 round.time = lobbyTime;
                 return;
@@ -72,6 +76,8 @@ public class RoundTimer {
             }
             round.time--;
         } else if (round.mode == RoundMode.STARTING) {
+            int startingTime = fileManager.getTime(Time.BEFORE_START);
+            XpBarTimer.updateXpBar(round, startingTime);
             if (round.time == 0) {
                 round.mode = RoundMode.RUNNING;
                 return;
@@ -84,6 +90,8 @@ public class RoundTimer {
             }
             round.time++;
         } else if (round.mode == RoundMode.ENDING) {
+            int endTime = fileManager.getTime(Time.END);
+            XpBarTimer.updateXpBar(round, endTime);
             if (round.time == 0) {
                 roundManager.resetRound(round);
                 return;

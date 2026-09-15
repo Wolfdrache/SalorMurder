@@ -1,7 +1,7 @@
 package com.wolfdrache.salormurder.models;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -53,7 +53,7 @@ public class RoundSM {
         return !players.isEmpty();
     }
 
-    public Collection<Player> getPlayersByMode(PlayerMode mode) {
+    public List<Player> getPlayersByMode(PlayerMode mode) {
         return players.entrySet().stream()
             .filter(entry -> entry.getValue().mode == mode)
             .map(Map.Entry::getKey)
