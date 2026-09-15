@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.manager.FileManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.models.RoundSM;
@@ -57,6 +58,7 @@ public class RoundTimer {
             player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         }
 
+        TabHelper.updateTabList(round);
         if (round.mode == RoundMode.WAITING) {
             int lobbyTime = fileManager.getTime(Time.LOBBY);
             if (!roundManager.enoughPlayersToStart(round)) {

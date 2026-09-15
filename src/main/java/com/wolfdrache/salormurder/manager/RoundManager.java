@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
 import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.models.MapSM;
 import com.wolfdrache.salormurder.models.PlayerSM;
@@ -83,6 +85,13 @@ public class RoundManager {
             activePlayers.put(player, round);
             giveItems(player);
             joinSignManager.updateSign(round);
+            MessageHelper.playerJoinRound(player, round);
+        } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
+            player.teleport(round.map.world.getSpawnLocation());
+            round.addPlayer(player);
+            activePlayers.put(player, round);
+            giveItems(player);
+            MessageHelper.playerSpectateRound(player, round);
         }
     }
 
@@ -92,6 +101,8 @@ public class RoundManager {
         PlayerSM playerSM = round.players.get(player);
         round.players.remove(player);
         activePlayers.remove(player);
+        MessageHelper.playerLeaveRound(player, round);
+        TabHelper.showPlayerToAll(round, player);
         player.teleport(fileManager.getLeaveLocation());
         if (round.mode == RoundMode.WAITING) {
             joinSignManager.updateSign(round);
@@ -122,6 +133,7 @@ public class RoundManager {
     public void startRound(RoundSM round) {
         World world = mapManager.getOrLoadWorld(round.map);
         mapManager.addWorldToMap(round.map, world);
+        round.resetLootChests();
         round.mode = RoundMode.STARTING;
         joinSignManager.replaceRoundSign(round);
         spawnPlayer(round);
@@ -131,6 +143,7 @@ public class RoundManager {
         round.mode = RoundMode.ENDING;
         round.time = fileManager.getTime(Time.END);
         announceWinner(round);
+        TabHelper.showAllPlayersRound(round);
         for (Player player : round.players.keySet()) {
             PlayerSM playerSM = round.players.get(player);
             playerSM.mode = PlayerMode.ENDING;
@@ -239,10 +252,9 @@ public class RoundManager {
                         inventory.setItem(4, knife);
                         break;
                     case DETECTIVE:
-                        // give detective an trident
+                        // TODO: give detective an trident
                         break;
                     case INNOCENT:
-                        // give innocent no items
                         break;
                 }
                 break;
@@ -254,7 +266,6 @@ public class RoundManager {
                 inventory.setItem(8, NavItems.leaveItem);
                 break;
             case EDIT:
-                // give edit mode items, e.g., a world edit wand
                 break;
         }
     }
@@ -302,11 +313,26 @@ public class RoundManager {
             stats.roundsLostInnocent++;
         }
         playerSM.mode = PlayerMode.SPECTATING;
+        round.addLootChest(player.getLocation(), player);
         giveItems(player);
         checkEndRound(round);
     }
 
     public List<RoundSM> getRounds() {
         return new ArrayList<>(rounds);
+    }
+
+    public void playerLootChest(RoundSM round, Player player, Location location) {
+        round.playerLootChest(player, location);
+        checkPlayerGetTrident(player);
+    }
+
+    public void checkPlayerGetTrident(Player player) {
+        if (player.getInventory().contains(Material.TRIDENT)) return;
+        ItemStack tridentCost = fileManager.getTridentCost();
+        if (tridentCost != null && player.getInventory().containsAtLeast(tridentCost, tridentCost.getAmount())) {
+            player.getInventory().removeItem(tridentCost);
+            // TODO: give trident
+        }
     }
 }

@@ -4,7 +4,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 
@@ -21,6 +25,7 @@ public class RoundSM {
     public final MapSM map;
     public RoundMode mode = RoundMode.WAITING;
     public int time;
+    private final Map<Location, LootChest> lootChests = new HashMap<>();
 
     public RoundSM(MapSM map) {
         this.map = map;
@@ -53,5 +58,50 @@ public class RoundSM {
             .filter(entry -> entry.getValue().mode == mode)
             .map(Map.Entry::getKey)
             .toList();
+    }
+
+    public void resetLootChests() {
+        lootChests.clear();
+        for (Location location : map.lootchests) {
+            lootChests.put(location, new LootChest(location));
+        }
+    }
+
+    public void refillLootChests() {
+        for (Location location : map.lootchests) {
+            LootChest lootChest = lootChests.get(location);
+            if (lootChest == null) {
+                lootChests.put(location, new LootChest(location));
+            } else if (lootChest.armorstand == null || lootChest.armorstand.isDead()) {
+                lootChests.put(location, new LootChest(location));
+            } else {
+                lootChest.refill();
+            }
+        }
+    }
+
+    public void playerLootChest(Player player, Location location) {
+        LootChest lootChest = lootChests.get(location);
+        if (lootChest == null) return;
+        PlayerInventory inventory = player.getInventory();
+        for (Material material : lootChest.items.keySet()) {
+            int amount = lootChest.items.get(material);
+            ItemStack itemStack = new ItemStack(material, amount);
+            inventory.addItem(itemStack);
+        }
+        lootChests.remove(location);
+    }
+
+    public void addLootChest(Location location, Player player) {
+        LootChest lootChest = new LootChest(location);
+        lootChest.items.clear();
+        PlayerInventory inventory = player.getInventory();
+        for (Material material : LootChest.getLootTableMaterials()) {
+            if (inventory.contains(material)) {
+                int amount = inventory.all(material).values().stream().mapToInt(ItemStack::getAmount).sum();
+                lootChest.items.put(material, amount);
+            }
+        }
+        lootChests.put(location, lootChest);
     }
 }

@@ -1,13 +1,17 @@
 package com.wolfdrache.salormurder.listener;
 
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.salormurder.helper.LootChestHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.models.PlayerSM;
@@ -54,5 +58,22 @@ public class InteractionListener implements Listener {
         if (playerSM.mode != PlayerMode.PLAYING) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler 
+    public void onLootChestInteract(PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof ArmorStand armorstand)) return;
+        if (!LootChestHelper.isLootChest(armorstand)) return;
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode != PlayerMode.PLAYING) {
+            event.setCancelled(true);
+            return;
+        }
+        Location location = armorstand.getLocation();
+        roundManager.playerLootChest(round, player, location);
     }
 }

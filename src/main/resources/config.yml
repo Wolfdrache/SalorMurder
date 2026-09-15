@@ -28,3 +28,7 @@ joinSigns:
     position: 60.5 64.0 60.5
 
 minPlayers: 2
+
+trident:
+  material: EMERALD
+  amount: 10

@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,6 +23,7 @@ import org.bukkit.util.EulerAngle;
 
 import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.models.ArmorstandLB;
+import com.wolfdrache.salormurder.models.LootChest;
 import com.wolfdrache.salormurder.models.ConfigModes.Coins;
 import com.wolfdrache.salormurder.models.ConfigModes.Time;
 import com.wolfdrache.salormurder.models.MapSM;
@@ -282,5 +284,20 @@ public class FileManager {
         int coins = statsConfig.getInt(playerUUID + ".coins", 0);
 
         return new PlayerStats(killedDetectives, killedInnocents, murderersKilled, roundsWonMurderer, roundsWonInnocent, roundsLostMurderer, roundsLostInnocent, randomKills, coins);
+    }
+
+    public ItemStack getTridentCost() {
+        String tridentMaterialString = plugin.getConfig().getString("trident.material", "EMERALD");
+        int tridentAmount = plugin.getConfig().getInt("trident.amount", 1);
+        Material tridentMaterial = Material.getMaterial(tridentMaterialString);
+        List<Material> lootableMaterials = LootChest.getLootTableMaterials();
+        if (tridentMaterial == null || !lootableMaterials.contains(tridentMaterial)) {
+            if (lootableMaterials.contains(Material.EMERALD)) {
+                tridentMaterial = Material.EMERALD;
+            } else {
+                tridentMaterial = lootableMaterials.get(0);
+            }
+        }
+        return new ItemStack(tridentMaterial, tridentAmount);
     }
 }
