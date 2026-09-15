@@ -37,13 +37,19 @@ public class AdminCommand implements TabExecutor {
             return true;
         }
         if (subCommand.equalsIgnoreCase("edit")) {
-            // Handle edit sub-command
+            roundManager.editRound(player, round);
         } else if (subCommand.equalsIgnoreCase("stop")) {
-            // Handle stop sub-command
+            roundManager.stopRound(round);
         } else if (subCommand.equalsIgnoreCase("kill")) {
-            // Handle kill sub-command
+            String targetName = args[2];
+            Player target = player.getServer().getPlayer(targetName);
+            if (target == null) {
+                player.sendMessage("Player not found.");
+                return true;
+            }
+            roundManager.killPlayer(target, round);
         } else if (subCommand.equalsIgnoreCase("save")) {
-            // Handle save sub-command
+            roundManager.saveRound(round);
         }
         return true;
     }

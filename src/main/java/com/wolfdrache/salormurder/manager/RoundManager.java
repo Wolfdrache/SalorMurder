@@ -330,7 +330,10 @@ public class RoundManager {
     }
 
     public void killPlayer(Player player, RoundSM round) {
+        if (round == null || !round.players.containsKey(player)) return;
+        if (round.mode != RoundMode.RUNNING) return;
         PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode != PlayerMode.PLAYING) return;
         PlayerStats stats = statsManager.getPlayerStats(player);
         if (playerSM.role == Role.MURDERER) {
             stats.roundsLostMurderer++;
@@ -384,6 +387,44 @@ public class RoundManager {
         player.setFlying(false);
         if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
             player.setAllowFlight(false);
+        }
+    }
+
+    public void stopRound(RoundSM round) {
+        round.mode = RoundMode.ENDING;
+        for (Player player : new ArrayList<>(round.players.keySet())) {
+            leavePlayer(player);
+            MessageHelper.sendMessage(player, "§cDie Runde wurde gestoppt.");
+        }
+        resetRound(round);
+    }
+
+    public void editRound(Player player, RoundSM round) {
+        if (getRoundByPlayer(player) != null) {
+            leavePlayer(player);
+        }
+        if (round.mode != RoundMode.EDIT) {
+            stopRound(round);
+            round.mode = RoundMode.EDIT;
+            World world = mapManager.getOrLoadWorld(round.map);
+            mapManager.addWorldToMap(round.map, world);
+            joinSignManager.replaceRoundSign(round);
+        }
+        player.teleport(round.map.world.getSpawnLocation());
+        activePlayers.put(player, round);
+        round.addPlayer(player);
+        player.setGameMode(GameMode.CREATIVE);
+        player.getInventory().clear();
+    }
+
+    public void saveRound(RoundSM round) {
+        if (round.mode == RoundMode.EDIT) {
+            for (Player player : new ArrayList<>(round.players.keySet())) {
+                leavePlayer(player);
+                MessageHelper.sendMessage(player, "§aDie Map wurde gespeichert.");
+            }
+            mapManager.saveWorld(round.map);
+            resetRound(round);
         }
     }
 }

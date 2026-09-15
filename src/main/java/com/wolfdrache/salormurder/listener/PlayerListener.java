@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.wolfdrache.salormurder.items.NavItems;
+import com.wolfdrache.salormurder.manager.ChatManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
 import com.wolfdrache.salormurder.models.LootChest;
@@ -27,11 +29,13 @@ import com.wolfdrache.salormurder.timer.BowTimer;
 public class PlayerListener implements Listener {
     private final RoundManager roundManager;
     private final StatsManager statsManager;
+    private final ChatManager chatManager;
     private final BowTimer bowTimer;
 
-    public PlayerListener(RoundManager roundManager, StatsManager statsManager, BowTimer bowTimer) {
+    public PlayerListener(RoundManager roundManager, StatsManager statsManager, ChatManager chatManager, BowTimer bowTimer) {
         this.roundManager = roundManager;
         this.statsManager = statsManager;
+        this.chatManager = chatManager;
         this.bowTimer = bowTimer;
     }
 
@@ -128,5 +132,27 @@ public class PlayerListener implements Listener {
 
         bowTimer.startBowTimer(player);
         player.getInventory().setItem(8, NavItems.arrowCooldownItem);
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) round = roundManager.getRoundByLocation(player.getLocation());
+        if (round == null) return;
+        if (round.mode == RoundMode.WAITING || round.mode == RoundMode.EDIT) return;
+        PlayerSM playerSW = round.players.get(player);
+        if (round.mode == RoundMode.RUNNING || round.mode == RoundMode.STARTING) {
+            if (playerSW == null || playerSW.mode == PlayerMode.SPECTATING){
+                event.setCancelled(true);
+                chatManager.sendSpectatorMessage(player, round, event.getMessage());
+            } else {
+                event.setCancelled(true);
+                chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());
+            }
+        } else if (round.mode == RoundMode.ENDING) {
+            event.setCancelled(true);
+            chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());
+        }
     }
 }

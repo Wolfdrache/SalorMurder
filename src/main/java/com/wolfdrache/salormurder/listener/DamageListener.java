@@ -19,6 +19,7 @@ import com.wolfdrache.salormurder.manager.StatsManager;
 import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.ConfigModes.Coins;
+import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.PlayerSM.Role;
 import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
@@ -121,5 +122,24 @@ public class DamageListener implements Listener {
         RoundSM round = roundManager.getRoundByLocation(entity.getLocation());
         if (round == null) return;
         entity.remove();
+    }
+
+    @EventHandler 
+    public void onVoidDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (event.getCause() != EntityDamageEvent.DamageCause.VOID) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode != RoundMode.RUNNING) {
+            player.teleport(round.map.world.getSpawnLocation());
+            player.setFallDistance(0);
+            return;
+        }
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode == PlayerMode.PLAYING) {
+            roundManager.killPlayer(player, round);
+        }
+        player.teleport(round.map.world.getSpawnLocation());
+        player.setFallDistance(0);
     }
 }

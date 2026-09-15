@@ -23,6 +23,7 @@ public class SalorMurder extends JavaPlugin {
     private StatsManager statsManager;
     private JoinSignManager joinSignManager;
     private CoinManager coinManager;
+    private ChatManager chatManager;
 
     private RoundTimer roundTimer;
     private BowTimer bowTimer;
@@ -42,6 +43,7 @@ public class SalorMurder extends JavaPlugin {
             return;
         }
         fileManager = new FileManager(this);
+        chatManager = new ChatManager();
         coinManager = new CoinManager(economy, fileManager);
         mapManager = new MapManager(fileManager);
         statsManager = new StatsManager(fileManager);
@@ -60,7 +62,8 @@ public class SalorMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager, teleporterGui), this);
         getServer().getPluginManager().registerEvents(new DamageListener(murderKnfes, roundManager, statsManager, coinManager), this);
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, bowTimer), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, chatManager, bowTimer), this);
+        getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager), this);
 
         getCommand("joinssm").setExecutor(new JoinCommand(roundManager));
         getCommand("leavesm").setExecutor(new LeaveCommand(roundManager));
