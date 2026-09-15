@@ -1,14 +1,18 @@
 package com.wolfdrache.salormurder.listener;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
@@ -96,5 +100,26 @@ public class PlayerListener implements Listener {
                 return;
             }
         }
+    }
+
+    @EventHandler 
+    public void onPlayerShoot(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM == null) return;
+        if (playerSM.mode != PlayerMode.PLAYING && playerSM.mode != PlayerMode.EDIT) return;
+
+        if (!(event.getProjectile() instanceof Arrow arrow)) return;
+        Vector velocity = arrow.getVelocity();
+        Trident trident = player.getWorld().spawn(
+            player.getEyeLocation(),
+            Trident.class
+        );
+        trident.setVelocity(velocity);
+        trident.setShooter(player);
+        arrow.remove();
+        event.setProjectile(trident);
     }
 }

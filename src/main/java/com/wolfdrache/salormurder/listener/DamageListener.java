@@ -2,10 +2,13 @@ package com.wolfdrache.salormurder.listener;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
@@ -73,5 +76,50 @@ public class DamageListener implements Listener {
                 roundManager.killPlayer(player, round);
             }
         }
+    }
+
+    @EventHandler 
+    public void onTridentDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(event.getDamager() instanceof Trident trident)) return;
+        if (!(trident.getShooter() instanceof Player damager)) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode != RoundMode.RUNNING) return;
+        if (!round.players.containsKey(damager)) return;
+        PlayerSM playerSM = round.players.get(player);
+        PlayerSM damagerSM = round.players.get(damager);
+        if (damagerSM.role == Role.MURDERER) {
+            PlayerStats killerStats = statsManager.getPlayerStats(damager);
+            if (playerSM.role == Role.INNOCENT) {
+                killerStats.killedInnocents++;
+                coinManager.giveCoins(player, Coins.MURDER_KILL_INNO);
+            } else {
+                killerStats.killedDetectives++;
+                coinManager.giveCoins(player, Coins.MURDER_KILL_DETECTIVE);
+                MessageHelper.detectiveKilled(round);
+            }
+        } else {
+            PlayerStats killerStats = statsManager.getPlayerStats(damager);
+            if (playerSM.role == Role.MURDERER) {
+                killerStats.murderersKilled++;
+                coinManager.giveCoins(player, Coins.KILL_MURDER);
+            } else {
+                killerStats.randomKills++;
+                coinManager.giveCoins(player, Coins.RANDOM_KILL);
+                if (playerSM.role == Role.DETECTIVE) {
+                    MessageHelper.detectiveKilled(round);
+                }
+            }
+        }
+        roundManager.killPlayer(player, round);
+    }
+
+    @EventHandler 
+    public void onProjectileLand(ProjectileHitEvent event) {
+        Projectile entity = event.getEntity();
+        RoundSM round = roundManager.getRoundByLocation(entity.getLocation());
+        if (round == null) return;
+        entity.remove();
     }
 }

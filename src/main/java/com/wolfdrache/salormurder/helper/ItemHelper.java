@@ -27,5 +27,16 @@ public class ItemHelper {
         }
         return head;
     }
-    
+
+    public static ItemStack createRoundBow() {
+        ItemStack bow = new ItemStack(Material.BOW);
+        ItemMeta meta = bow.getItemMeta();
+        if (meta != null) {
+            meta.displayName(MessageHelper.createComponent("§3Waffe"));
+            meta.setUnbreakable(true);
+            bow.setItemMeta(meta);
+        }
+        return bow;
+    }
+
 }

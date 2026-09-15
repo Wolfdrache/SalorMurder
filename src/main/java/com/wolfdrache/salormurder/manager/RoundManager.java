@@ -252,7 +252,8 @@ public class RoundManager {
                         inventory.setItem(4, knife);
                         break;
                     case DETECTIVE:
-                        // TODO: give detective an trident
+                        inventory.setItem(0, NavItems.bowItem);
+                        inventory.setItem(8, NavItems.arrowItem);
                         break;
                     case INNOCENT:
                         break;
@@ -296,6 +297,15 @@ public class RoundManager {
         return null;
     }
 
+    public RoundSM getRoundByLocation(Location location) {
+        for (RoundSM round : rounds) {
+            if (round.map.world.equals(location.getWorld())) {
+                return round;
+            }
+        }
+        return null;
+    }
+
     private RoundSM getRandomRoundByMode(RoundMode waiting) {
         List<RoundSM> roundsByMode = getRoundsByMode(waiting);
         if (roundsByMode.isEmpty()) {
@@ -328,11 +338,12 @@ public class RoundManager {
     }
 
     public void checkPlayerGetTrident(Player player) {
-        if (player.getInventory().contains(Material.TRIDENT)) return;
+        if (player.getInventory().contains(Material.BOW)) return;
         ItemStack tridentCost = fileManager.getTridentCost();
         if (tridentCost != null && player.getInventory().containsAtLeast(tridentCost, tridentCost.getAmount())) {
             player.getInventory().removeItem(tridentCost);
-            // TODO: give trident
+            player.getInventory().setItem(0, NavItems.bowItem);
+            player.getInventory().setItem(8, NavItems.arrowItem);
         }
     }
 }

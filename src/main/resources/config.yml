@@ -8,7 +8,7 @@ time:
 coins:
   murder_kill_detective: 10
   murder_kill_inno: 5
-  detective_kill_murder: 5
+  kill_murder: 5
   random_kill: -5
   murder_win: 10
   inno_win: 10
