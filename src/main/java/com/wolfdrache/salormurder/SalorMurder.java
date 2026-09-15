@@ -9,7 +9,7 @@ import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
-import com.wolfdrache.salormurder.timer.RoundTimer;
+import com.wolfdrache.salormurder.timer.*;
 import com.wolfdrache.salormurder.ui.TeleporterGui;
 
 public class SalorMurder extends JavaPlugin {
@@ -25,6 +25,7 @@ public class SalorMurder extends JavaPlugin {
     private CoinManager coinManager;
 
     private RoundTimer roundTimer;
+    private BowTimer bowTimer;
 
     private TeleporterGui teleporterGui;
 
@@ -48,7 +49,8 @@ public class SalorMurder extends JavaPlugin {
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
         roundTimer = new RoundTimer(this, roundManager, fileManager);
-        roundManager.setExtras(joinSignManager, roundTimer);
+        bowTimer = new BowTimer(this, fileManager);
+        roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
 
         teleporterGui = new TeleporterGui(roundManager);
 
@@ -58,7 +60,7 @@ public class SalorMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnfes, roundManager, teleporterGui), this);
         getServer().getPluginManager().registerEvents(new DamageListener(murderKnfes, roundManager, statsManager, coinManager), this);
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, bowTimer), this);
 
         getCommand("joinssm").setExecutor(new JoinCommand(roundManager));
         getCommand("leavesm").setExecutor(new LeaveCommand(roundManager));

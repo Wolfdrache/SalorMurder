@@ -26,6 +26,7 @@ import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.PlayerSM.Role;
 import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.timer.BowTimer;
 import com.wolfdrache.salormurder.timer.RoundTimer;
 
 public class RoundManager {
@@ -38,6 +39,7 @@ public class RoundManager {
     
     private JoinSignManager joinSignManager;
     private RoundTimer roundTimer;
+    private BowTimer bowTimer;
 
     private final Location waitingLobby;
 
@@ -58,9 +60,10 @@ public class RoundManager {
         createAllRounds();
     }
 
-    public void setExtras(JoinSignManager joinSignManager, RoundTimer roundTimer) {
+    public void setExtras(JoinSignManager joinSignManager, RoundTimer roundTimer, BowTimer bowTimer) {
         this.joinSignManager = joinSignManager;
         this.roundTimer = roundTimer;
+        this.bowTimer = bowTimer;
     }
 
     private void createAllRounds() {
@@ -115,6 +118,7 @@ public class RoundManager {
             if (playerSM.mode == PlayerMode.PLAYING) {
                 PlayerStats playerStats = statsManager.getPlayerStats(player);
                 playerStats.addLoss(playerSM.role);
+                bowTimer.stopBowTimer(player);
                 checkEndRound(round);
             }
         }
@@ -142,6 +146,7 @@ public class RoundManager {
     private void endRound(RoundSM round) {
         round.mode = RoundMode.ENDING;
         round.time = fileManager.getTime(Time.END);
+        bowTimer.stopTimerRound(round);
         announceWinner(round);
         TabHelper.showAllPlayersRound(round);
         for (Player player : round.players.keySet()) {
@@ -155,6 +160,7 @@ public class RoundManager {
         for (Player player : new ArrayList<>(round.players.keySet())) {
             leavePlayer(player);
         }
+        bowTimer.stopTimerRound(round);
         round.mode = RoundMode.WAITING;
         round.time = fileManager.getTime(Time.LOBBY);
         mapManager.unloadWorld(round.map);

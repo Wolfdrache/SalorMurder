@@ -84,11 +84,14 @@ public class RoundSM {
         LootChest lootChest = lootChests.get(location);
         if (lootChest == null) return;
         PlayerInventory inventory = player.getInventory();
+        if (inventory.getItem(0) == null) inventory.setItem(0, new ItemStack(Material.BARRIER)); 
+        if (inventory.getItem(8) == null) inventory.setItem(8, new ItemStack(Material.BARRIER));
         for (Material material : lootChest.items.keySet()) {
             int amount = lootChest.items.get(material);
             ItemStack itemStack = new ItemStack(material, amount);
             inventory.addItem(itemStack);
         }
+        inventory.remove(Material.BARRIER);
         lootChests.remove(location);
     }
 

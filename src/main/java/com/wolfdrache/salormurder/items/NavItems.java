@@ -12,4 +12,5 @@ public class NavItems {
 
     public final static ItemStack bowItem = ItemHelper.createRoundBow();
     public final static ItemStack arrowItem = ItemHelper.createNavItem(Material.ARROW, "§eWaffe geladen");
+    public final static ItemStack arrowCooldownItem = ItemHelper.createNavItem(Material.GRAY_DYE, "§7Waffe nachladen");
 }

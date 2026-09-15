@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
 import com.wolfdrache.salormurder.models.LootChest;
@@ -21,14 +22,17 @@ import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.timer.BowTimer;
 
 public class PlayerListener implements Listener {
     private final RoundManager roundManager;
     private final StatsManager statsManager;
+    private final BowTimer bowTimer;
 
-    public PlayerListener(RoundManager roundManager, StatsManager statsManager) {
+    public PlayerListener(RoundManager roundManager, StatsManager statsManager, BowTimer bowTimer) {
         this.roundManager = roundManager;
         this.statsManager = statsManager;
+        this.bowTimer = bowTimer;
     }
 
     @EventHandler 
@@ -121,5 +125,8 @@ public class PlayerListener implements Listener {
         trident.setShooter(player);
         arrow.remove();
         event.setProjectile(trident);
+
+        bowTimer.startBowTimer(player);
+        player.getInventory().setItem(8, NavItems.arrowCooldownItem);
     }
 }
