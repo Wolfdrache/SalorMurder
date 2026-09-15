@@ -1,6 +1,9 @@
 package com.wolfdrache.salormurder.listener;
 
 import org.bukkit.Location;
+import org.bukkit.block.Bed;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,5 +85,34 @@ public class InteractionListener implements Listener {
         }
         Location location = armorstand.getLocation();
         roundManager.playerLootChest(round, player, location);
+    }
+
+    @EventHandler
+    public void onBlockInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode != PlayerMode.PLAYING) {
+            event.setCancelled(true);
+            return;
+        }
+        Block block = event.getClickedBlock();
+        if (block == null) return;
+        if (block.getState() instanceof Container || block.getBlockData() instanceof Bed) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler 
+    public void onLeftClickBlock(PlayerInteractEvent event) {
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
     }
 }

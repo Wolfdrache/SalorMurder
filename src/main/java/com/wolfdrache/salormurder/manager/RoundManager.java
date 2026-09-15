@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -89,12 +90,16 @@ public class RoundManager {
             giveItems(player);
             joinSignManager.updateSign(round);
             MessageHelper.playerJoinRound(player, round);
+            givePlayerWaitingAttributes(player);
+            player.setGameMode(GameMode.ADVENTURE);
         } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
             player.teleport(round.map.world.getSpawnLocation());
             round.addPlayer(player);
             activePlayers.put(player, round);
             giveItems(player);
+            givePlayerSpectatorAttributes(player);
             MessageHelper.playerSpectateRound(player, round);
+            player.setGameMode(GameMode.ADVENTURE);
         }
     }
 
@@ -107,6 +112,7 @@ public class RoundManager {
         MessageHelper.playerLeaveRound(player, round);
         TabHelper.showPlayerToAll(round, player);
         player.teleport(fileManager.getLeaveLocation());
+        givePlayerNormalAttributes(player);
         if (round.mode == RoundMode.WAITING) {
             joinSignManager.updateSign(round);
             if (round.players.isEmpty()) {
@@ -152,6 +158,7 @@ public class RoundManager {
         for (Player player : round.players.keySet()) {
             PlayerSM playerSM = round.players.get(player);
             playerSM.mode = PlayerMode.ENDING;
+            givePlayerWaitingAttributes(player);
             giveItems(player);
         }
     }
@@ -230,14 +237,16 @@ public class RoundManager {
         detectiveSM.role = Role.DETECTIVE;
         players.add(murderer);
 
-        for (Player p : players) {
+        for (Player player : players) {
             Location spawnLocation = spawnPoints.get(ThreadLocalRandom.current().nextInt(spawnPoints.size()));
-            p.teleport(spawnLocation);
-            PlayerSM playerSM = round.players.get(p);
+            player.teleport(spawnLocation);
+            PlayerSM playerSM = round.players.get(player);
             if (playerSM.role == null) playerSM.role = Role.INNOCENT;
             playerSM.mode = PlayerMode.PLAYING;
             spawnPoints.remove(spawnLocation);
-            giveItems(p);
+            givePlayerNormalAttributes(player);
+            giveItems(player);
+            player.setGameMode(GameMode.SURVIVAL);
         }
     }
 
@@ -329,6 +338,7 @@ public class RoundManager {
             stats.roundsLostInnocent++;
         }
         playerSM.mode = PlayerMode.SPECTATING;
+        givePlayerSpectatorAttributes(player);
         round.addLootChest(player.getLocation(), player);
         giveItems(player);
         checkEndRound(round);
@@ -350,6 +360,30 @@ public class RoundManager {
             player.getInventory().removeItem(tridentCost);
             player.getInventory().setItem(0, NavItems.bowItem);
             player.getInventory().setItem(8, NavItems.arrowItem);
+        }
+    }
+
+    public void givePlayerWaitingAttributes(Player player) {
+        player.setInvisible(false);
+        player.setInvulnerable(true);
+        player.setCollidable(false);
+        player.setAllowFlight(false);
+        player.setFlying(false);
+    }
+    public void givePlayerSpectatorAttributes(Player player) {
+        player.setInvisible(true);
+        player.setInvulnerable(true);
+        player.setCollidable(false);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+    }
+    public void givePlayerNormalAttributes(Player player) {
+        player.setInvisible(false);
+        player.setInvulnerable(false);
+        player.setCollidable(true);
+        player.setFlying(false);
+        if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+            player.setAllowFlight(false);
         }
     }
 }
