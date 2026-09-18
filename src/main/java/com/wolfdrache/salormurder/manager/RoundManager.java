@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
@@ -31,7 +31,7 @@ import com.wolfdrache.salormurder.timer.BowTimer;
 import com.wolfdrache.salormurder.timer.RoundTimer;
 
 public class RoundManager {
-    private final MurderKnfesAPI murderKnifes;
+    private final MurderKnifesAPI murderKnifes;
     
     private final MapManager mapManager;
     private final StatsManager statsManager;
@@ -49,7 +49,7 @@ public class RoundManager {
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(MurderKnfesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+    public RoundManager(MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
         this.statsManager = statsManager;

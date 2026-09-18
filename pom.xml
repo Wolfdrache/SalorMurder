@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.github.Wolfdrache</groupId>
             <artifactId>MurderKnifes</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>3da28ff96d</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

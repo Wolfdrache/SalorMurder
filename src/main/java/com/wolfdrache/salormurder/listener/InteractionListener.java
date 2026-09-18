@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.helper.LootChestHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.RoundManager;
@@ -24,12 +24,12 @@ import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 import com.wolfdrache.salormurder.ui.TeleporterGui;
 
 public class InteractionListener implements Listener {
-    private final MurderKnfesAPI murderKnfes;
+    private final MurderKnifesAPI murderKnifes;
     private final RoundManager roundManager;
     private final TeleporterGui teleporterGui;
 
-    public InteractionListener(MurderKnfesAPI murderKnfes, RoundManager roundManager, TeleporterGui teleporterGui) {
-        this.murderKnfes = murderKnfes;
+    public InteractionListener(MurderKnifesAPI murderKnifes, RoundManager roundManager, TeleporterGui teleporterGui) {
+        this.murderKnifes = murderKnifes;
         this.roundManager = roundManager;
         this.teleporterGui = teleporterGui;
     }
@@ -49,7 +49,7 @@ public class InteractionListener implements Listener {
             return;
         } else if (item.equals(NavItems.knifeSelectorItem)) {
             event.setCancelled(true);
-            murderKnfes.openKnifeSelector(player);
+            murderKnifes.openKnifeSelector(player);
             return;
         } else if (item.equals(NavItems.spectatorTpItem)) {
             event.setCancelled(true);

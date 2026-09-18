@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.manager.CoinManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
@@ -25,12 +25,12 @@ import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 
 public class DamageListener implements Listener {
-    private final MurderKnfesAPI murderKnifes;
+    private final MurderKnifesAPI murderKnifes;
     private final RoundManager roundManager;
     private final StatsManager statsManager;
     private final CoinManager coinManager;
 
-    public DamageListener(MurderKnfesAPI murderKnifes, RoundManager roundManager, StatsManager statsManager, CoinManager coinManager) {
+    public DamageListener(MurderKnifesAPI murderKnifes, RoundManager roundManager, StatsManager statsManager, CoinManager coinManager) {
         this.murderKnifes = murderKnifes;
         this.roundManager = roundManager;
         this.statsManager = statsManager;
