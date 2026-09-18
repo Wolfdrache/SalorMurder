@@ -427,4 +427,14 @@ public class RoundManager {
             resetRound(round);
         }
     }
+
+    public void unloadAllRounds() {
+        for (RoundSM round : rounds) {
+            if (round.mode == RoundMode.EDIT) {
+                saveRound(round);
+            } else {
+                stopRound(round);
+            }
+        }
+    }
 }
