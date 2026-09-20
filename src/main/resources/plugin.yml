@@ -1,4 +1,4 @@
-name: MurderKnifes
+name: SalorMurder
 version: ${project.version}
 main: com.wolfdrache.salormurder.SalorMurder
 api-version: 1.19

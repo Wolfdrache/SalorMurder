@@ -14,12 +14,12 @@ coins:
   inno_win: 10
 
 leaveLocation:
-  world: world
+  world: watermurder
   position: 50.5 64.0 50.5 90 0
 
 lobbyLocation:
-  world: world
-  position: 50.5 64.0 50.5 90 0
+  world: watermurder
+  position: -19.5 33 111.5 90 0
 
 joinSigns:
   - world: world
