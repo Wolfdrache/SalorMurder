@@ -16,6 +16,10 @@ public class TabHelper {
         if (plugin == null) {
             throw new IllegalStateException("Plugin instance is not set. Call setPlugin() before using this method.");
         }
+
+        if (round.map.world == null) {
+            return;
+        }
         
         String header = "§3§lSalor§c§lMurder\n";
         String footer = "§7Map: §e" + round.map.name +
