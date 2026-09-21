@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -113,7 +115,11 @@ public class FileManager {
         return getWorldLocation("leaveLocation");
     }
     public Location getLobbyLocation() {
-        return getWorldLocation("lobbyLocation");
+        String locationString = plugin.getConfig().getString("lobbyLocation.position");
+        Location location = readLocation(locationString);
+        World world = plugin.getServer().createWorld(new WorldCreator(plugin.getConfig().getString("lobbyLocation.world")));
+        location.setWorld(world);
+        return location;
     }
 
     public List<Location> getJoinSigns() {

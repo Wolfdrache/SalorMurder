@@ -59,7 +59,7 @@ public class AdminCommand implements TabExecutor {
         if (args.length == 1) {
             return roundManager.getRounds().stream()
                 .map(round -> round.map.name)
-                .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
+                .filter(name -> name.startsWith(args[0]))
                 .toList();
         }
         if (args.length == 2) {

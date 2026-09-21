@@ -314,7 +314,7 @@ public class RoundManager {
 
     public RoundSM getRoundByLocation(Location location) {
         for (RoundSM round : rounds) {
-            if (round.map.world.equals(location.getWorld())) {
+            if (round.map != null && round.map.world != null &&round.map.world.equals(location.getWorld())) {
                 return round;
             }
         }
