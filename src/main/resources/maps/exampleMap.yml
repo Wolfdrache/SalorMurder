@@ -1,5 +1,5 @@
 name: exampleMap
-worldname: exampleWorld
+worldName: exampleWorld
 builder: exampleBuilder
 
 spawnpoints:
