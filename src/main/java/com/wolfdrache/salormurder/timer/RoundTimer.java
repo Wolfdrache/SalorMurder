@@ -86,7 +86,7 @@ public class RoundTimer {
         } else if (round.mode == RoundMode.RUNNING) {
             int lootChestRefill = fileManager.getTime(Time.LOOT_CHEST_REFILL);
             if (round.time % lootChestRefill == 0) {
-                // Refill loot chests
+                round.refillLootChests();
             }
             round.time++;
         } else if (round.mode == RoundMode.ENDING) {

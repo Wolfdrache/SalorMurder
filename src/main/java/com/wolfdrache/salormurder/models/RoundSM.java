@@ -93,6 +93,7 @@ public class RoundSM {
         }
         inventory.remove(Material.BARRIER);
         lootChests.remove(location);
+        lootChest.armorstand.remove();
     }
 
     public void addLootChest(Location location, Player player) {
