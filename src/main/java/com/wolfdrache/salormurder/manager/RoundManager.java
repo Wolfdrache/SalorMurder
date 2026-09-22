@@ -144,6 +144,7 @@ public class RoundManager {
         World world = mapManager.getOrLoadWorld(round.map);
         mapManager.addWorldToMap(round.map, world);
         round.resetLootChests();
+        round.time = fileManager.getTime(Time.BEFORE_START);
         round.mode = RoundMode.STARTING;
         joinSignManager.replaceRoundSign(round);
         spawnPlayer(round);

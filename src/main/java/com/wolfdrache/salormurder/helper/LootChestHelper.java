@@ -14,7 +14,6 @@ public class LootChestHelper {
         armorstand.setVisible(false);
         armorstand.setInvulnerable(true);
         armorstand.setGravity(false);
-        armorstand.setMarker(true);
         armorstand.addScoreboardTag(LOOT_CHEST_KEY);
         armorstand.setSmall(true);
         EntityEquipment equipment = armorstand.getEquipment(); 

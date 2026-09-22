@@ -5,10 +5,12 @@ import org.bukkit.block.Bed;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -109,6 +111,25 @@ public class InteractionListener implements Listener {
     @EventHandler 
     public void onLeftClickBlock(PlayerInteractEvent event) {
         if (event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler 
+    public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler 
+    public void onItemFrameInteract(PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof ItemFrame)) return;
         Player player = event.getPlayer();
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;

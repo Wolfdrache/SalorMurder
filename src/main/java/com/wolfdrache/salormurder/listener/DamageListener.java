@@ -1,6 +1,7 @@
 package com.wolfdrache.salormurder.listener;
 
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Trident;
@@ -141,5 +142,14 @@ public class DamageListener implements Listener {
         }
         player.teleport(round.map.world.getSpawnLocation());
         player.setFallDistance(0);
+    }
+
+    @EventHandler 
+    public void onHangingDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Hanging hanging)) return;
+        RoundSM round = roundManager.getRoundByLocation(hanging.getLocation());
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
     }
 }
