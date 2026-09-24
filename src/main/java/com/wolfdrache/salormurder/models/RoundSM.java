@@ -60,7 +60,7 @@ public class RoundSM {
             .toList();
     }
 
-    public void resetLootChests() {
+    public void initializeLootChests() {
         lootChests.clear();
         for (Location location : map.lootchests) {
             lootChests.put(location, new LootChest(location));
@@ -107,5 +107,14 @@ public class RoundSM {
             }
         }
         lootChests.put(location, lootChest);
+    }
+
+    public void removeAllLootChests() {
+        for (LootChest lootChest : lootChests.values()) {
+            if (lootChest.armorstand != null && !lootChest.armorstand.isDead()) {
+                lootChest.armorstand.remove();
+            }
+        }
+        lootChests.clear();
     }
 }
