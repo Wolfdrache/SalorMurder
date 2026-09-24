@@ -143,7 +143,7 @@ public class RoundManager {
     public void startRound(RoundSM round) {
         World world = mapManager.getOrLoadWorld(round.map);
         mapManager.addWorldToMap(round.map, world);
-        round.resetLootChests();
+        round.initializeLootChests();
         round.time = fileManager.getTime(Time.BEFORE_START);
         round.mode = RoundMode.STARTING;
         joinSignManager.replaceRoundSign(round);
@@ -155,6 +155,7 @@ public class RoundManager {
         round.time = fileManager.getTime(Time.END);
         bowTimer.stopTimerRound(round);
         announceWinner(round);
+        round.removeAllLootChests();
         TabHelper.showAllPlayersRound(round);
         for (Player player : round.players.keySet()) {
             PlayerSM playerSM = round.players.get(player);
@@ -168,6 +169,7 @@ public class RoundManager {
         for (Player player : new ArrayList<>(round.players.keySet())) {
             leavePlayer(player);
         }
+        round.removeAllLootChests();
         bowTimer.stopTimerRound(round);
         round.mode = RoundMode.WAITING;
         round.time = fileManager.getTime(Time.LOBBY);
