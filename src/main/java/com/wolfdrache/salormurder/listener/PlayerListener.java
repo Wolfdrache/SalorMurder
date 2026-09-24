@@ -46,6 +46,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        roundManager.leavePlayer(event.getPlayer());
         statsManager.savePlayerStats(event.getPlayer());
     }
 

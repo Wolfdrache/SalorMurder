@@ -73,8 +73,8 @@ public class InteractionListener implements Listener {
     }
 
     @EventHandler 
-    public void onLootChestInteract(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof ArmorStand armorstand)) return;
+    public void onLootChestInteract(PlayerArmorStandManipulateEvent event) {
+        ArmorStand armorstand = event.getRightClicked();
         if (!LootChestHelper.isLootChest(armorstand)) return;
         Player player = event.getPlayer();
         RoundSM round = roundManager.getRoundByPlayer(player);
