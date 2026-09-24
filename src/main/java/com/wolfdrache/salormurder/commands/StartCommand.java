@@ -24,6 +24,9 @@ public class StartCommand implements TabExecutor {
             return true;
         }
         RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) {
+            return false;
+        }
         roundManager.startCommand(round);
         return true;
     }
