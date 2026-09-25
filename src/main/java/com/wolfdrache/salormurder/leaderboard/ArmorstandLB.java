@@ -14,17 +14,19 @@ public class ArmorstandLB {
     public final EulerAngle rightArmPose;
     public final EulerAngle leftLegPose;
     public final EulerAngle rightLegPose;
+    public final boolean small;
     public final Location location;
     public final EntityEquipment equipment;
     public ArmorStand armorStand;
 
-    public ArmorstandLB(EulerAngle headPose, EulerAngle bodyPose, EulerAngle leftArmPose, EulerAngle rightArmPose, EulerAngle leftLegPose, EulerAngle rightLegPose, Location location, EntityEquipment equipment) {
+    public ArmorstandLB(EulerAngle headPose, EulerAngle bodyPose, EulerAngle leftArmPose, EulerAngle rightArmPose, EulerAngle leftLegPose, EulerAngle rightLegPose, boolean small, Location location, EntityEquipment equipment) {
         this.headPose = headPose;
         this.bodyPose = bodyPose;
         this.leftArmPose = leftArmPose;
         this.rightArmPose = rightArmPose;
         this.leftLegPose = leftLegPose;
         this.rightLegPose = rightLegPose;
+        this.small = small;
         this.location = location;
         this.equipment = equipment;
         summon();
@@ -38,6 +40,8 @@ public class ArmorstandLB {
         armorStand.setRightArmPose(rightArmPose);
         armorStand.setLeftLegPose(leftLegPose);
         armorStand.setRightLegPose(rightLegPose);
+        armorStand.setSmall(small);
+        armorStand.setMarker(true);
         armorStand.setVisible(true);
         armorStand.setInvulnerable(true);
         armorStand.setGravity(false);

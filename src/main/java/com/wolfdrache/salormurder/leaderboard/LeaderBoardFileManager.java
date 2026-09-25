@@ -62,6 +62,7 @@ public class LeaderBoardFileManager {
         EulerAngle rightArmPose = parseEulerAngle(config.getString(path + ".rightArmPose"));
         EulerAngle leftLegPose = parseEulerAngle(config.getString(path + ".leftLegPose"));
         EulerAngle rightLegPose = parseEulerAngle(config.getString(path + ".rightLegPose"));
+        boolean small = config.getBoolean(path + ".small"); 
         EntityEquipment equipment = parseEquipment(equipmentSection);
 
         if (headPose == null || bodyPose == null || leftArmPose == null || rightArmPose == null || leftLegPose == null || rightLegPose == null || equipment == null) {
@@ -69,7 +70,7 @@ public class LeaderBoardFileManager {
             return null;
         }
 
-        return new ArmorstandLB(headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose, location, equipment);
+        return new ArmorstandLB(headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose, small, location, equipment);
     }
 
     private Location getWorldLocation(Map<?, ?> locationMap) {

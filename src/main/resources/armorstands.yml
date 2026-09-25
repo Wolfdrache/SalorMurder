@@ -9,6 +9,7 @@ rank:
     rightArmPose: "0 0 0"
     leftLegPose: "0 0 0"
     rightLegPose: "0 0 0"
+    small: false
     equipment:
       helmet: ""
       chestplate: ""
@@ -29,6 +30,7 @@ rank:
     rightArmPose: "0 0 0"
     leftLegPose: "0 0 0"
     rightLegPose: "0 0 0"
+    small: false
     equipment:
       helmet: ""
       chestplate: ""
@@ -46,6 +48,7 @@ rank:
     rightArmPose: "0 0 0"
     leftLegPose: "0 0 0"
     rightLegPose: "0 0 0"
+    small: true
     equipment:
       helmet: ""
       chestplate: ""
