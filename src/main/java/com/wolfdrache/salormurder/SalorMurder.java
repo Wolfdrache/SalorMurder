@@ -7,6 +7,8 @@ import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.helper.TabHelper;
+import com.wolfdrache.salormurder.leaderboard.LeaderBoardFileManager;
+import com.wolfdrache.salormurder.leaderboard.LeaderBoardListener;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.*;
@@ -30,6 +32,8 @@ public class SalorMurder extends JavaPlugin {
 
     private TeleporterGui teleporterGui;
 
+    private LeaderBoardFileManager leaderBoardFileManager;
+
     @Override
     public void onEnable(){
         if (!setupEconomy()) {
@@ -43,10 +47,11 @@ public class SalorMurder extends JavaPlugin {
             return;
         }
         fileManager = new FileManager(this);
+        leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
         coinManager = new CoinManager(economy, fileManager);
         mapManager = new MapManager(fileManager);
-        statsManager = new StatsManager(fileManager);
+        statsManager = new StatsManager(fileManager, leaderBoardFileManager);
         roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
@@ -64,6 +69,7 @@ public class SalorMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, chatManager, bowTimer), this);
         getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager), this);
+        getServer().getPluginManager().registerEvents(new LeaderBoardListener(), this);
 
         getCommand("joinsm").setExecutor(new JoinCommand(roundManager));
         getCommand("leavesm").setExecutor(new LeaveCommand(roundManager));

@@ -1,4 +1,4 @@
-package com.wolfdrache.salormurder.models;
+package com.wolfdrache.salormurder.leaderboard;
 
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -7,14 +7,16 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.util.EulerAngle;
 
 public class ArmorstandLB {
+    private static final String LEADERBOARD_TAG = "LEADERBOARD";
     public final EulerAngle headPose;
     public final EulerAngle bodyPose;
     public final EulerAngle leftArmPose;
     public final EulerAngle rightArmPose;
     public final EulerAngle leftLegPose;
     public final EulerAngle rightLegPose;
-    public final Location location; 
-    public final EntityEquipment equipment; 
+    public final Location location;
+    public final EntityEquipment equipment;
+    public ArmorStand armorStand;
 
     public ArmorstandLB(EulerAngle headPose, EulerAngle bodyPose, EulerAngle leftArmPose, EulerAngle rightArmPose, EulerAngle leftLegPose, EulerAngle rightLegPose, Location location, EntityEquipment equipment) {
         this.headPose = headPose;
@@ -25,10 +27,11 @@ public class ArmorstandLB {
         this.rightLegPose = rightLegPose;
         this.location = location;
         this.equipment = equipment;
+        summon();
     }
 
-    public ArmorStand summon() {
-        ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+    public void summon() {
+        armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         armorStand.setHeadPose(headPose);
         armorStand.setBodyPose(bodyPose);
         armorStand.setLeftArmPose(leftArmPose);
@@ -36,6 +39,7 @@ public class ArmorstandLB {
         armorStand.setLeftLegPose(leftLegPose);
         armorStand.setRightLegPose(rightLegPose);
         armorStand.setVisible(true);
+        armorStand.setInvulnerable(true);
         armorStand.setGravity(false);
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
@@ -46,6 +50,10 @@ public class ArmorstandLB {
         armorStand.getEquipment().setBoots(equipment.getBoots());
         armorStand.getEquipment().setItemInMainHand(equipment.getItemInMainHand());
         armorStand.getEquipment().setItemInOffHand(equipment.getItemInOffHand());
-        return armorStand;
+        armorStand.addScoreboardTag(LEADERBOARD_TAG);
+    }
+
+    public static boolean isLeaderboardArmorstand(ArmorStand armorStand) {
+        return armorStand.getScoreboardTags().contains(LEADERBOARD_TAG);
     }
 }
