@@ -29,7 +29,6 @@ public class ArmorstandLB {
         this.small = small;
         this.location = location;
         this.equipment = equipment;
-        summon();
     }
 
     public void summon() {
@@ -41,7 +40,6 @@ public class ArmorstandLB {
         armorStand.setLeftLegPose(leftLegPose);
         armorStand.setRightLegPose(rightLegPose);
         armorStand.setSmall(small);
-        armorStand.setMarker(true);
         armorStand.setVisible(true);
         armorStand.setInvulnerable(true);
         armorStand.setGravity(false);

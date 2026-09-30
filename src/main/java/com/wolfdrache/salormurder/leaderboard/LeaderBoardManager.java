@@ -86,9 +86,7 @@ public class LeaderBoardManager {
         int points = playerStatsProvider.apply(topPlayer).getPoints();
         armorstandLB.armorStand.customName(MessageHelper.createComponent("§6" + i + ". " + topPlayer.getName() + " §7- §e" + points));
         EntityEquipment equipment = armorstandLB.armorStand.getEquipment();
-        if (equipment != null) {
-            equipment.setHelmet(playerHead);
-        }
+        equipment.setHelmet(playerHead);
     }
 
     private void despawnArmorstand(ArmorstandLB armorstandLB) {
