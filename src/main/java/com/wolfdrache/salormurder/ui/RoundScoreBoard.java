@@ -15,7 +15,6 @@ import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
-import com.wolfdrache.salormurder.models.PlayerSM.Role;
 import com.wolfdrache.salormurder.models.RoundSM;
 
 public class RoundScoreBoard {
@@ -79,17 +78,15 @@ public class RoundScoreBoard {
     }
 
     private String getDetectiveAlive(RoundSM round) {
-        for (Player p : round.players.keySet()) {
-            PlayerSM playerSM = round.players.get(p);
-            if (playerSM != null && playerSM.role == Role.DETECTIVE) {
-                if (playerSM.mode == PlayerMode.PLAYING) {
+        if (round.detective != null) {
+            PlayerSM detectiveSM = round.players.get(round.detective);
+            if (detectiveSM != null) {
+                if (detectiveSM.mode == PlayerMode.PLAYING) {
                     return "§a✔";
-                } else {
-                    return "§c✖";
-                }
+                } 
             }
         }
-        return "§7-";
+        return "§c✖";
     }
 
     private String getAlivePlayersCount(RoundSM round) {

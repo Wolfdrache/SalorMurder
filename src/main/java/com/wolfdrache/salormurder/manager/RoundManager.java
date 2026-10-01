@@ -177,6 +177,8 @@ public class RoundManager {
         bowTimer.stopTimerRound(round);
         round.mode = RoundMode.WAITING;
         round.time = fileManager.getTime(Time.LOBBY);
+        round.murderer = null;
+        round.detective = null;
         mapManager.unloadWorld(round.map);
         roundTimer.stopTimer(round);
         joinSignManager.giveRoundToSign(round);
@@ -199,13 +201,16 @@ public class RoundManager {
 
         if (winningRole != null) {
             String message;
+            String murderReveal = "§cDer Mörder war: " + (round.murderer != null ? round.murderer.getName() : "Unbekannt");
             if (winningRole == Role.MURDERER) {
                 message = "§cDer Mörder hat gewonnen!";
             } else {
                 message = "§aDie Unschuldigen haben gewonnen!";
             }
             for (Player player : round.players.keySet()) {
-                MessageHelper.sendTitle(player, message, "");
+                MessageHelper.sendTitle(player, message, murderReveal);
+                MessageHelper.sendMessage(player, message);
+                MessageHelper.sendMessage(player, murderReveal);
                 PlayerSM playerSM = round.players.get(player);
                 if (playerSM.mode == PlayerMode.PLAYING && playerSM.role == winningRole) {
                     PlayerStats playerStats = statsManager.getPlayerStats(player);
@@ -234,6 +239,7 @@ public class RoundManager {
         List<Player> players = new ArrayList<>(round.players.keySet());
         int murderIndex = ThreadLocalRandom.current().nextInt(players.size());
         Player murderer = players.get(murderIndex);
+        round.murderer = murderer;
         players.remove(murderer);
         PlayerSM murdererSM = round.players.get(murderer);
         murdererSM.role = Role.MURDERER;
@@ -242,6 +248,7 @@ public class RoundManager {
         Player detective = players.get(detectiveIndex);
         PlayerSM detectiveSM = round.players.get(detective);
         detectiveSM.role = Role.DETECTIVE;
+        round.detective = detective;
         players.add(murderer);
 
         for (Player player : players) {
@@ -370,6 +377,12 @@ public class RoundManager {
             player.getInventory().removeItem(tridentCost);
             player.getInventory().setItem(0, NavItems.bowItem);
             player.getInventory().setItem(8, NavItems.arrowItem);
+        } else {
+            int missingAmount = tridentCost.getAmount() - player.getInventory().all(tridentCost.getType()).values().stream().mapToInt(ItemStack::getAmount).sum();
+            if (missingAmount > 0) {
+                String clueMessage = "Du brauchst noch " + missingAmount + " " + tridentCost.getType().name().toLowerCase() + ", um den Bogen zu erhalten.";
+                MessageHelper.sendMessage(player, clueMessage);
+            }
         }
     }
 
