@@ -29,6 +29,7 @@ import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 import com.wolfdrache.salormurder.timer.BowTimer;
 import com.wolfdrache.salormurder.timer.RoundTimer;
+import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 
 public class RoundManager {
     private final MurderKnifesAPI murderKnifes;
@@ -37,6 +38,7 @@ public class RoundManager {
     private final StatsManager statsManager;
     private final CoinManager coinManager;
     private final FileManager fileManager;
+    private final RoundScoreBoard roundScoreBoard;
     
     private JoinSignManager joinSignManager;
     private RoundTimer roundTimer;
@@ -49,12 +51,13 @@ public class RoundManager {
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+    public RoundManager(MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager, RoundScoreBoard roundScoreBoard) {
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
         this.statsManager = statsManager;
         this.coinManager = coinManager;
         this.fileManager = fileManager;
+        this.roundScoreBoard = roundScoreBoard;
 
         this.waitingLobby = fileManager.getLobbyLocation();
 
@@ -107,6 +110,7 @@ public class RoundManager {
         if (!activePlayers.containsKey(player)) return;
         RoundSM round = activePlayers.get(player);
         PlayerSM playerSM = round.players.get(player);
+        roundScoreBoard.removeScoreBoard(round);
         round.players.remove(player);
         activePlayers.remove(player);
         MessageHelper.playerLeaveRound(player, round);
