@@ -2,57 +2,70 @@ rank:
   1: 
     location:
       world: world
-      position: "0 64 0"
-    headPose: "0 0 0"
-    bodyPose: "0 0 0"
-    leftArmPose: "0 0 0"
-    rightArmPose: "0 0 0"
-    leftLegPose: "0 0 0"
-    rightLegPose: "0 0 0"
+      position: "-83.5 21.0 7.5 -45.0 0.0"
+    headPose: "-27.70 5.43 0.0"
+    bodyPose: "0.0 0.93 0.0"
+    leftArmPose: "-130.0 0.0 50.0"
+    rightArmPose: "-105.0 90.0 10.0"
+    leftLegPose: "-1.0 0.0 -31.0"
+    rightLegPose: "0.0 0.0 30.0"
     small: false
     equipment:
-      helmet: ""
-      chestplate: ""
-      leggings: ""
-      boots: ""
-      itemInMainHand: 
-        ==: org.bukkit.inventory.ItemStack
-        type: DIAMOND_PICKAXE
-        amount: 1
-      itemInOffHand: ""
+      chestplate:
+        type: DIAMOND_CHESTPLATE
+        enchanted: true
+      leggings:
+        type: DIAMOND_LEGGINGS
+      boots:
+        type: DIAMOND_BOOTS
+        enchanted: true
+      itemInMainHand:
+        type: DIAMOND_SWORD
+        enchanted: true
+      itemInOffHand:
+        type: ENCHANTED_GOLDEN_APPLE
   2: 
     location:
       world: world
-      position: "0 64 0"
-    headPose: "0 0 0"
-    bodyPose: "0 0 0"
-    leftArmPose: "0 0 0"
-    rightArmPose: "0 0 0"
-    leftLegPose: "0 0 0"
-    rightLegPose: "0 0 0"
+      position: "-81.5 19.0 7.5 0.0 0.0"
+    headPose: "33.3 -5.37 0.0"
+    bodyPose: "0.0 -3.21 0.0"
+    leftArmPose: "-40.0 0.0 -10.0"
+    rightArmPose: "-45.0 0.0 10.0"
+    leftLegPose: "-1.0 0.0 -1.0"
+    rightLegPose: "1.0 0.0 1.0"
     small: false
     equipment:
-      helmet: ""
-      chestplate: ""
-      leggings: ""
-      boots: ""
-      itemInMainHand: ""
-      itemInOffHand: ""
+      chestplate:
+        type: IRON_CHESTPLATE
+      leggings:
+        type: GOLDEN_LEGGINGS
+      boots:
+        type: DIAMOND_BOOTS
+        enchanted: true
+      itemInMainHand:
+        type: BOW
+      itemInOffHand:
+        type: ARROW
   3: 
     location:
       world: world
-      position: "0 64 0"
-    headPose: "0 0 0"
-    bodyPose: "0 0 0"
-    leftArmPose: "0 0 0"
-    rightArmPose: "0 0 0"
-    leftLegPose: "0 0 0"
-    rightLegPose: "0 0 0"
+      position: "-81.5 18.0 9.5 -135.0 0.0"
+    headPose: "-30.0 -2.58 0.0"
+    bodyPose: "0.0 -4.87 0.0"
+    leftArmPose: "-100.0 0.0 -10.0"
+    rightArmPose: "-15.0 0.0 10.0"
+    leftLegPose: "-61.0 0.0 -1.0"
+    rightLegPose: "30.0 0.0 1.0"
     small: true
     equipment:
-      helmet: ""
-      chestplate: ""
-      leggings: ""
-      boots: ""
-      itemInMainHand: ""
-      itemInOffHand: ""
+      chestplate:
+        type: GOLDEN_CHESTPLATE
+      leggings:
+        type: IRON_LEGGINGS
+      boots:
+        type: CHAINMAIL_BOOTS
+      itemInMainHand:
+        type: GOLDEN_SWORD
+      itemInOffHand:
+        type: GOLDEN_APPLE

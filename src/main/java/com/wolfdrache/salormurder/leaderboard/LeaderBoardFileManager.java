@@ -2,19 +2,14 @@ package com.wolfdrache.salormurder.leaderboard;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
@@ -62,15 +57,37 @@ public class LeaderBoardFileManager {
         EulerAngle rightArmPose = parseEulerAngle(config.getString(path + ".rightArmPose"));
         EulerAngle leftLegPose = parseEulerAngle(config.getString(path + ".leftLegPose"));
         EulerAngle rightLegPose = parseEulerAngle(config.getString(path + ".rightLegPose"));
-        boolean small = config.getBoolean(path + ".small"); 
-        EntityEquipment equipment = parseEquipment(equipmentSection);
+        boolean small = config.getBoolean(path + ".small");
+        ItemStack chestplate = readItemStack(equipmentSection, "chestplate");
+        ItemStack leggings = readItemStack(equipmentSection, "leggings");
+        ItemStack boots = readItemStack(equipmentSection, "boots");
+        ItemStack itemInMainHand = readItemStack(equipmentSection, "itemInMainHand");
+        ItemStack itemInOffHand = readItemStack(equipmentSection, "itemInOffHand");
 
-        if (headPose == null || bodyPose == null || leftArmPose == null || rightArmPose == null || leftLegPose == null || rightLegPose == null || equipment == null) {
+        if (headPose == null || bodyPose == null || leftArmPose == null || rightArmPose == null || leftLegPose == null || rightLegPose == null) {
             plugin.getLogger().warning("Invalid armorstand config for leaderboard rank " + rank);
             return null;
         }
 
-        return new ArmorstandLB(headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose, small, location, equipment);
+        return new ArmorstandLB(headPose, bodyPose, leftArmPose, rightArmPose, leftLegPose, rightLegPose, small, location, chestplate, leggings, boots, itemInMainHand, itemInOffHand);
+    }
+
+    private ItemStack readItemStack(ConfigurationSection section, String key) {
+        if (section == null || !section.contains(key)) {
+            return null;
+        }
+        String itemString = section.getString(key + ".type");
+        boolean enchanted = section.getBoolean(key + ".enchanted", false);
+        Material material = Material.getMaterial(itemString);
+        if (material == null) {
+            plugin.getLogger().warning("Invalid material for " + key + ": " + itemString);
+            return null;
+        }
+        ItemStack itemStack = new ItemStack(material);
+        if (enchanted) {
+            itemStack.addUnsafeEnchantment(org.bukkit.enchantments.Enchantment.DURABILITY, 1); // Example enchantment, adjust as needed
+        }
+        return itemStack;
     }
 
     private Location getWorldLocation(Map<?, ?> locationMap) {
@@ -103,64 +120,5 @@ public class LeaderBoardFileManager {
             Math.toRadians(Double.parseDouble(parts[1])),
             Math.toRadians(Double.parseDouble(parts[2]))
         );
-    }
-
-    private EntityEquipment parseEquipment(ConfigurationSection section) {
-        World world = Bukkit.getWorld("world");
-        if (world == null) {
-            plugin.getLogger().warning("Could not load world 'world' for leaderboard armorstand equipment");
-            return null;
-        }
-
-        ItemStack helmet = readItemStack(section, "helmet");
-        ItemStack chestplate = readItemStack(section, "chestplate");
-        ItemStack leggings = readItemStack(section, "leggings");
-        ItemStack boots = readItemStack(section, "boots");
-        ItemStack itemInMainHand = readItemStack(section, "itemInMainHand");
-        ItemStack itemInOffHand = readItemStack(section, "itemInOffHand");
-
-        ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world, 0, 64, 0), EntityType.ARMOR_STAND);
-        EntityEquipment equipment = armorStand.getEquipment();
-        if (equipment != null) {
-            equipment.setHelmet(helmet);
-            equipment.setChestplate(chestplate);
-            equipment.setLeggings(leggings);
-            equipment.setBoots(boots);
-            equipment.setItemInMainHand(itemInMainHand);
-            equipment.setItemInOffHand(itemInOffHand);
-        }
-        armorStand.remove();
-        return equipment;
-    }
-
-    private ItemStack readItemStack(ConfigurationSection section, String path) {
-        Object raw = section.get(path);
-        if (raw instanceof ItemStack itemStack) {
-            return itemStack;
-        }
-
-        ConfigurationSection sub = section.getConfigurationSection(path);
-        if (sub != null) {
-            try {
-                return ItemStack.deserialize(toPlainMap(sub));
-            } catch (IllegalArgumentException ignored) {
-                // Fallback below keeps compatibility with already-deserialized values.
-            }
-        }
-
-        return section.getItemStack(path);
-    }
-
-    private Map<String, Object> toPlainMap(ConfigurationSection section) {
-        Map<String, Object> map = new HashMap<>();
-        for (String key : section.getKeys(false)) {
-            Object value = section.get(key);
-            if (value instanceof ConfigurationSection) {
-                map.put(key, toPlainMap((ConfigurationSection) value));
-            } else {
-                map.put(key, value);
-            }
-        }
-        return map;
     }
 }
