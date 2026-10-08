@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.ChatManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
