@@ -132,7 +132,6 @@ public class PlayerListener implements Listener {
         event.setProjectile(trident);
 
         bowTimer.startBowTimer(player);
-        player.getInventory().setItem(8, NavItems.arrowCooldownItem);
     }
 
     @EventHandler
