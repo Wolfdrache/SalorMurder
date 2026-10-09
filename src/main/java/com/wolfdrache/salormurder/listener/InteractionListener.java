@@ -1,9 +1,8 @@
 package com.wolfdrache.salormurder.listener;
 
 import org.bukkit.Location;
-import org.bukkit.block.Bed;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Container;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -103,9 +102,18 @@ public class InteractionListener implements Listener {
         }
         Block block = event.getClickedBlock();
         if (block == null) return;
-        if (block.getState() instanceof Container || block.getBlockData() instanceof Bed) {
+        if (!isInteractableBlock(block)) {
             event.setCancelled(true);
         }
+    }
+
+    private boolean isInteractableBlock(Block block) {
+        if (block.getType().name().contains("DOOR")) return true;
+        if (block.getType().name().contains("BUTTON")) return true;
+        if (block.getType().equals(Material.LEVER)) return true;
+        if (block.getType().name().contains("FENCE_GATE")) return true;
+        if (block.getType().name().contains("PRESSURE_PLATE")) return true;
+        return false;
     }
 
     @EventHandler 

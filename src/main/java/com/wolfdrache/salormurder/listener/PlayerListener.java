@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.ChatManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
@@ -132,7 +131,6 @@ public class PlayerListener implements Listener {
         event.setProjectile(trident);
 
         bowTimer.startBowTimer(player);
-        player.getInventory().setItem(8, NavItems.arrowCooldownItem);
     }
 
     @EventHandler

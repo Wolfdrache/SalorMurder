@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -25,6 +26,8 @@ public class RoundSM {
     public final MapSM map;
     public RoundMode mode = RoundMode.WAITING;
     public int time;
+    public OfflinePlayer murderer = null;
+    public OfflinePlayer detective = null;
     private final Map<Location, LootChest> lootChests = new HashMap<>();
 
     public RoundSM(MapSM map) {

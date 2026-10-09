@@ -3,7 +3,7 @@ package com.wolfdrache.salormurder.leaderboard;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
 public class ArmorstandLB {
@@ -16,10 +16,15 @@ public class ArmorstandLB {
     public final EulerAngle rightLegPose;
     public final boolean small;
     public final Location location;
-    public final EntityEquipment equipment;
+
+    private final ItemStack chestplate;
+    private final ItemStack leggings;
+    private final ItemStack boots;
+    private final ItemStack itemInMainHand;
+    private final ItemStack itemInOffHand;
     public ArmorStand armorStand;
 
-    public ArmorstandLB(EulerAngle headPose, EulerAngle bodyPose, EulerAngle leftArmPose, EulerAngle rightArmPose, EulerAngle leftLegPose, EulerAngle rightLegPose, boolean small, Location location, EntityEquipment equipment) {
+    public ArmorstandLB(EulerAngle headPose, EulerAngle bodyPose, EulerAngle leftArmPose, EulerAngle rightArmPose, EulerAngle leftLegPose, EulerAngle rightLegPose, boolean small, Location location, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack itemInMainHand, ItemStack itemInOffHand) {
         this.headPose = headPose;
         this.bodyPose = bodyPose;
         this.leftArmPose = leftArmPose;
@@ -28,7 +33,12 @@ public class ArmorstandLB {
         this.rightLegPose = rightLegPose;
         this.small = small;
         this.location = location;
-        this.equipment = equipment;
+
+        this.chestplate = chestplate;
+        this.leggings = leggings;
+        this.boots = boots;
+        this.itemInMainHand = itemInMainHand;
+        this.itemInOffHand = itemInOffHand;
     }
 
     public void summon() {
@@ -46,12 +56,11 @@ public class ArmorstandLB {
         armorStand.setBasePlate(false);
         armorStand.setArms(true);
         armorStand.setCustomNameVisible(true);
-        armorStand.getEquipment().setHelmet(equipment.getHelmet());
-        armorStand.getEquipment().setChestplate(equipment.getChestplate());
-        armorStand.getEquipment().setLeggings(equipment.getLeggings());
-        armorStand.getEquipment().setBoots(equipment.getBoots());
-        armorStand.getEquipment().setItemInMainHand(equipment.getItemInMainHand());
-        armorStand.getEquipment().setItemInOffHand(equipment.getItemInOffHand());
+        armorStand.getEquipment().setChestplate(chestplate);
+        armorStand.getEquipment().setLeggings(leggings);
+        armorStand.getEquipment().setBoots(boots);
+        armorStand.getEquipment().setItemInMainHand(itemInMainHand);
+        armorStand.getEquipment().setItemInOffHand(itemInOffHand);
         armorStand.addScoreboardTag(LEADERBOARD_TAG);
     }
 

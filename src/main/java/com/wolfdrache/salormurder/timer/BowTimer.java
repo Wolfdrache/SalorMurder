@@ -47,6 +47,7 @@ public class BowTimer {
             update(player);
         }, 0, 20L);
         int bowCooldown = fileManager.getTime(Time.TRIDENT_RELOAD);
+        player.getInventory().setItem(8, NavItems.arrowCooldownItem.asQuantity(bowCooldown));
         bowTasks.put(player, new Data(bowCooldown, task));
     }
 
@@ -77,6 +78,7 @@ public class BowTimer {
         }
         data.time--;
         XpBarTimer.updateXpBar(player, data.time, data.completeTime);
+        player.getInventory().setItem(8, NavItems.arrowCooldownItem.asQuantity(data.time));
         if (data.time <= 0) {
             stopBowTimer(player);
             player.getInventory().setItem(8, NavItems.arrowItem);

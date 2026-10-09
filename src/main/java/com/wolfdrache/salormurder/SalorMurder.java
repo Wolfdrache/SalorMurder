@@ -7,12 +7,11 @@ import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.helper.TabHelper;
-import com.wolfdrache.salormurder.leaderboard.LeaderBoardFileManager;
-import com.wolfdrache.salormurder.leaderboard.LeaderBoardListener;
+import com.wolfdrache.salormurder.leaderboard.*;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.*;
-import com.wolfdrache.salormurder.ui.TeleporterGui;
+import com.wolfdrache.salormurder.ui.*;
 
 public class SalorMurder extends JavaPlugin {
 
@@ -31,6 +30,7 @@ public class SalorMurder extends JavaPlugin {
     private BowTimer bowTimer;
 
     private TeleporterGui teleporterGui;
+    private RoundScoreBoard roundScoreBoard;
 
     private LeaderBoardFileManager leaderBoardFileManager;
 
@@ -49,13 +49,14 @@ public class SalorMurder extends JavaPlugin {
         fileManager = new FileManager(this);
         leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
+        roundScoreBoard = new RoundScoreBoard();
         coinManager = new CoinManager(economy, fileManager);
         mapManager = new MapManager(fileManager);
         statsManager = new StatsManager(fileManager, leaderBoardFileManager);
-        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
+        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager, roundScoreBoard);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
-        roundTimer = new RoundTimer(this, roundManager, fileManager);
+        roundTimer = new RoundTimer(this, roundManager, fileManager, roundScoreBoard);
         bowTimer = new BowTimer(this, fileManager);
         roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
 

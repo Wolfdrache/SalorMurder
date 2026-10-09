@@ -16,19 +16,22 @@ import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.ConfigModes.Time;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 import com.wolfdrache.salormurder.ui.XpBarTimer;
 
 public class RoundTimer {
     private final SalorMurder plugin;
     private final RoundManager roundManager;
     private final FileManager fileManager;
+    private final RoundScoreBoard roundScoreBoard;
 
     private final Map<RoundSM, BukkitTask> roundTasks = new HashMap<>(); 
 
-    public RoundTimer(SalorMurder plugin, RoundManager roundManager, FileManager fileManager) {
+    public RoundTimer(SalorMurder plugin, RoundManager roundManager, FileManager fileManager, RoundScoreBoard roundScoreBoard) {
         this.plugin = plugin;
         this.roundManager = roundManager;
         this.fileManager = fileManager;
+        this.roundScoreBoard = roundScoreBoard;
     }
 
     public void startTimer(RoundSM round) {
@@ -77,6 +80,7 @@ public class RoundTimer {
             round.time--;
         } else if (round.mode == RoundMode.STARTING) {
             int startingTime = fileManager.getTime(Time.BEFORE_START);
+            roundScoreBoard.updateScoreBoard(round);
             XpBarTimer.updateXpBar(round, startingTime);
             if (round.time == 0) {
                 round.mode = RoundMode.RUNNING;
@@ -89,8 +93,10 @@ public class RoundTimer {
                 round.refillLootChests();
             }
             round.time++;
+            roundScoreBoard.updateScoreBoard(round);
         } else if (round.mode == RoundMode.ENDING) {
             int endTime = fileManager.getTime(Time.END);
+            roundScoreBoard.updateScoreBoard(round);
             XpBarTimer.updateXpBar(round, endTime);
             if (round.time == 0) {
                 roundManager.resetRound(round);
