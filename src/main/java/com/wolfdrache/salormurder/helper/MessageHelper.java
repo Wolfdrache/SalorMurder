@@ -12,7 +12,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 
 public class MessageHelper {
-    private static final String prefix = "§3§lSalor§c§lMurder §7 >> §e";
+    private static final String prefix = "§3§lSailor§c§lMurder §7 >> §e";
     
     public static void sendMessage(Player player, String message) {
         player.sendMessage(prefix + message);

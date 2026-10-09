@@ -54,7 +54,7 @@ public class StatsManager {
         String targetName = targetPlayer.getName() != null ? targetPlayer.getName() : "Unbekannt";
 
         sender.sendMessage("§8§m------------------------------");
-        sender.sendMessage("§3§lSalor§c§lMurder §7| §fStats von §e" + targetName);
+        sender.sendMessage("§3§lSailor§c§lMurder §7| §fStats von §e" + targetName);
         sender.sendMessage("§8§m------------------------------");
         sender.sendMessage("§7Kills als Murder: §f" + (stats.killedDetectives + stats.killedInnocents));
         sender.sendMessage("§7Murderer getötet: §f" + stats.murderersKilled);

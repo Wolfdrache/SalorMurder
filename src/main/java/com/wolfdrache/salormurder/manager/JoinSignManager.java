@@ -114,7 +114,7 @@ public class JoinSignManager {
 
     private void setEmptySign(Location location) {
         if(!(location.getBlock().getState() instanceof Sign sign)) return;
-        sign.line(0, MessageHelper.createComponent("§3Salor§cMurder"));
+        sign.line(0, MessageHelper.createComponent("§3Sailor§cMurder"));
         sign.line(1, MessageHelper.createComponent("§7Keine Runde"));
         sign.line(2, MessageHelper.createComponent("§7verfügbar"));
         sign.line(3, MessageHelper.createComponent("§e-----------"));
@@ -125,7 +125,7 @@ public class JoinSignManager {
         Location location = getSignForRound(round);
         if (location == null) return;
         if(!(location.getBlock().getState() instanceof Sign sign)) return;
-        sign.line(0, MessageHelper.createComponent("§3Salor§cMurder"));
+        sign.line(0, MessageHelper.createComponent("§3Sailor§cMurder"));
         sign.line(1, MessageHelper.createComponent("§7Click to join"));
         sign.line(2, MessageHelper.createComponent("§e" + round.map.name));
         sign.line(3, MessageHelper.createComponent("§a" + round.players.size() + "/" + round.map.getMaxPlayers() + " Spieler"));
