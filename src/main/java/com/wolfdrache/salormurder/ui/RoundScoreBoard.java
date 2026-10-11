@@ -112,7 +112,7 @@ public class RoundScoreBoard {
 
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        Objective objective = board.registerNewObjective("sm", Criteria.DUMMY, MessageHelper.createComponent("§3§lSalor§c§lMurder"));
+        Objective objective = board.registerNewObjective("sm", Criteria.DUMMY, MessageHelper.createComponent("§3§lSailor§c§lMurder"));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         int score = 15;
