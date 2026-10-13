@@ -23,15 +23,13 @@ public class RoundTimer {
     private final SalorMurder plugin;
     private final RoundManager roundManager;
     private final FileManager fileManager;
-    private final RoundScoreBoard roundScoreBoard;
 
     private final Map<RoundSM, BukkitTask> roundTasks = new HashMap<>(); 
 
-    public RoundTimer(SalorMurder plugin, RoundManager roundManager, FileManager fileManager, RoundScoreBoard roundScoreBoard) {
+    public RoundTimer(SalorMurder plugin, RoundManager roundManager, FileManager fileManager) {
         this.plugin = plugin;
         this.roundManager = roundManager;
         this.fileManager = fileManager;
-        this.roundScoreBoard = roundScoreBoard;
     }
 
     public void startTimer(RoundSM round) {
@@ -80,7 +78,7 @@ public class RoundTimer {
             round.time--;
         } else if (round.mode == RoundMode.STARTING) {
             int startingTime = fileManager.getTime(Time.BEFORE_START);
-            roundScoreBoard.updateScoreBoard(round);
+            RoundScoreBoard.updateScoreBoard(round);
             XpBarTimer.updateXpBar(round, startingTime);
             if (round.time == 0) {
                 round.mode = RoundMode.RUNNING;
@@ -93,10 +91,10 @@ public class RoundTimer {
                 round.refillLootChests();
             }
             round.time++;
-            roundScoreBoard.updateScoreBoard(round);
+            RoundScoreBoard.updateScoreBoard(round);
         } else if (round.mode == RoundMode.ENDING) {
             int endTime = fileManager.getTime(Time.END);
-            roundScoreBoard.updateScoreBoard(round);
+            RoundScoreBoard.updateScoreBoard(round);
             XpBarTimer.updateXpBar(round, endTime);
             if (round.time == 0) {
                 roundManager.resetRound(round);

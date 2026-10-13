@@ -26,26 +26,26 @@ public class RoundScoreBoard {
         public Team detectiveAlive;
     }
 
-    private final Map<Player, ScoreboardData> boards = new HashMap<>();
+    private static final Map<Player, ScoreboardData> boards = new HashMap<>();
 
-    public void updateScoreBoard(RoundSM round) {
+    public static void updateScoreBoard(RoundSM round) {
         for (Player player : round.players.keySet()) {
             updateScoreboardForPlayer(player, round);
         }
     }
 
-    public void removeScoreBoard(RoundSM round) {
+    public static void removeScoreBoard(RoundSM round) {
         for (Player player : round.players.keySet()) {
             removeScoreBoard(player);
         }
     }
 
-    public void removeScoreBoard(Player player) {
+    public static void removeScoreBoard(Player player) {
         boards.remove(player);
         player.setScoreboard(player.getServer().getScoreboardManager().getNewScoreboard());
     }
 
-    private String getPlayerStatus(PlayerSM playerSM) {
+    public static String getPlayerStatus(PlayerSM playerSM) {
         switch (playerSM.mode) {
             case PLAYING:
                 switch (playerSM.role) {
@@ -60,7 +60,7 @@ public class RoundScoreBoard {
         }
     }
 
-    private void updateScoreboardForPlayer(Player player, RoundSM round) {
+    private static void updateScoreboardForPlayer(Player player, RoundSM round) {
         ScoreboardData data = boards.get(player);
         if (data == null) {
             createScoreboard(player, round);
@@ -77,7 +77,7 @@ public class RoundScoreBoard {
         data.detectiveAlive.suffix(MessageHelper.createComponent(getDetectiveAlive(round)));
     }
 
-    private String getDetectiveAlive(RoundSM round) {
+    private static String getDetectiveAlive(RoundSM round) {
         if (round.detective != null) {
             PlayerSM detectiveSM = round.players.get(round.detective);
             if (detectiveSM != null) {
@@ -89,7 +89,7 @@ public class RoundScoreBoard {
         return "§c✖";
     }
 
-    private String getAlivePlayersCount(RoundSM round) {
+    private static String getAlivePlayersCount(RoundSM round) {
         int playersInGame = 0;
         int alivePlayersCount = 0;
         for (Player p : round.players.keySet()) {
@@ -104,7 +104,7 @@ public class RoundScoreBoard {
         return alivePlayersCount + "/" + playersInGame;
     }
 
-    private void createScoreboard(Player player, RoundSM round) {
+    private static void createScoreboard(Player player, RoundSM round) {
         if (boards.containsKey(player)) {
             return; // Scoreboard already exists for this player
         }
@@ -128,7 +128,7 @@ public class RoundScoreBoard {
         boards.put(player, data);
     }
 
-    private Team registerLine(Scoreboard board, Objective objective,
+    private static Team registerLine(Scoreboard board, Objective objective,
                 String teamName, String entry, String prefix, int score) {
 
         Team team = board.registerNewTeam(teamName);

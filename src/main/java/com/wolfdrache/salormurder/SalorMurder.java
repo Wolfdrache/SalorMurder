@@ -30,7 +30,6 @@ public class SalorMurder extends JavaPlugin {
     private BowTimer bowTimer;
 
     private TeleporterGui teleporterGui;
-    private RoundScoreBoard roundScoreBoard;
 
     private LeaderBoardFileManager leaderBoardFileManager;
 
@@ -49,14 +48,13 @@ public class SalorMurder extends JavaPlugin {
         fileManager = new FileManager(this);
         leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
-        roundScoreBoard = new RoundScoreBoard();
         coinManager = new CoinManager(economy, fileManager);
         mapManager = new MapManager(fileManager);
         statsManager = new StatsManager(fileManager, leaderBoardFileManager);
-        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager, roundScoreBoard);
+        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
-        roundTimer = new RoundTimer(this, roundManager, fileManager, roundScoreBoard);
+        roundTimer = new RoundTimer(this, roundManager, fileManager);
         bowTimer = new BowTimer(this, fileManager);
         roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
 

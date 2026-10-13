@@ -5,7 +5,9 @@ import java.time.Duration;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.RoundSM;
+import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -67,6 +69,14 @@ public class MessageHelper {
         String message = "§cDer Detektiv wurde getötet!";
         for (Player p : round.players.keySet()) {
             sendMessage(p, message);
+        }
+    }
+
+    public static void sendRoleTitle(RoundSM round) {
+        for (Player player : round.players.keySet()) {
+            PlayerSM playerSM = round.players.get(player);
+            String title = RoundScoreBoard.getPlayerStatus(playerSM);
+            sendTitle(player, title, "", 10, 70, 20);
         }
     }
 }
