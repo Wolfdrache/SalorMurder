@@ -117,6 +117,7 @@ public class RoundManager {
         TabHelper.showPlayerToAll(round, player);
         player.teleport(fileManager.getLeaveLocation());
         givePlayerNormalAttributes(player);
+        player.setInvulnerable(true);
         if (round.mode == RoundMode.WAITING) {
             joinSignManager.updateSign(round);
             if (round.players.isEmpty()) {

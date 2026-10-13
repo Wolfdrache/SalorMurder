@@ -152,4 +152,15 @@ public class DamageListener implements Listener {
         if (round.mode == RoundMode.EDIT) return;
         event.setCancelled(true);
     }
+
+    @EventHandler 
+    public void onSpectatorDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player player)) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.mode == PlayerMode.SPECTATING) {
+            event.setCancelled(true);
+        }
+    }
 }
