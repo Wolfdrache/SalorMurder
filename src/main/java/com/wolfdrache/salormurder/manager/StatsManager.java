@@ -78,6 +78,6 @@ public class StatsManager {
     }
 
     public void despawnArmorstands() {
-        leaderBoardManager.despawnArmorstands();
+        leaderBoardManager.removeOldArmorstands();
     }
 }

@@ -11,23 +11,20 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.EulerAngle;
 
-import com.wolfdrache.salormurder.SalorMurder;
-
 public class LeaderBoardFileManager {
-    private final SalorMurder plugin;
+    private final Plugin plugin;
     private final File statsFile;
     private final File armorstandsFile;
 
-    public LeaderBoardFileManager(SalorMurder plugin) {
+    public LeaderBoardFileManager(Plugin plugin) {
         this.plugin = plugin;
         this.statsFile = new File(plugin.getDataFolder(), "stats.yml");
         this.armorstandsFile = new File(plugin.getDataFolder(), "armorstands.yml");
 
-        if (!armorstandsFile.exists()) {
-            plugin.saveResource("armorstands.yml", false);
-        }
+        ArmorstandLB.setNamespacedKey(plugin);
     }
 
     public List<UUID> getLeaderboard() {

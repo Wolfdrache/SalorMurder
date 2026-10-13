@@ -1,13 +1,20 @@
 package com.wolfdrache.salormurder.leaderboard;
 
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.EulerAngle;
 
 public class ArmorstandLB {
-    private static final String LEADERBOARD_TAG = "LEADERBOARD";
+    public static void setNamespacedKey(Plugin plugin) {
+        LEADERBOARD_KEY = new NamespacedKey(plugin, "leaderboard");
+    }
+    private static NamespacedKey LEADERBOARD_KEY;
+
     public final EulerAngle headPose;
     public final EulerAngle bodyPose;
     public final EulerAngle leftArmPose;
@@ -41,7 +48,7 @@ public class ArmorstandLB {
         this.itemInOffHand = itemInOffHand;
     }
 
-    public void summon() {
+    public void summon(int rank) {
         armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         armorStand.setHeadPose(headPose);
         armorStand.setBodyPose(bodyPose);
@@ -61,10 +68,11 @@ public class ArmorstandLB {
         armorStand.getEquipment().setBoots(boots);
         armorStand.getEquipment().setItemInMainHand(itemInMainHand);
         armorStand.getEquipment().setItemInOffHand(itemInOffHand);
-        armorStand.addScoreboardTag(LEADERBOARD_TAG);
+        armorStand.getPersistentDataContainer().set(LEADERBOARD_KEY, PersistentDataType.INTEGER, rank);
     }
 
     public static boolean isLeaderboardArmorstand(ArmorStand armorStand) {
-        return armorStand.getScoreboardTags().contains(LEADERBOARD_TAG);
+        if (armorStand == null) return false;
+        return armorStand.getPersistentDataContainer().has(LEADERBOARD_KEY, PersistentDataType.INTEGER);
     }
 }

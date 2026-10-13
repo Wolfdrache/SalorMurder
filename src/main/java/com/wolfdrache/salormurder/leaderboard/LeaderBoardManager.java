@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +36,22 @@ public class LeaderBoardManager {
         this.armorstandRank2 = leaderBoardFileManager.loadArmorstandLB(2);
         this.armorstandRank3 = leaderBoardFileManager.loadArmorstandLB(3);
 
+        removeOldArmorstands();
+
         updateArmorstands();
+    }
+
+    public void removeOldArmorstands() {
+        for (ArmorstandLB armLB : new ArmorstandLB[]{armorstandRank1, armorstandRank2, armorstandRank3}) {
+            if (armLB == null || armLB.location == null || armLB.location.getWorld() == null) continue;
+            Chunk armorstandChunk = armLB.location.getChunk();
+            armorstandChunk.load();
+            for (ArmorStand armorStand : armLB.location.getWorld().getEntitiesByClass(ArmorStand.class)) {
+                if (ArmorstandLB.isLeaderboardArmorstand(armorStand)) {
+                    armorStand.remove();
+                }
+            }
+        }
     }
 
     public void onPlayerLoaded(Player player) {
@@ -63,39 +79,24 @@ public class LeaderBoardManager {
         return leaderboard.indexOf(player.getUniqueId()) + 1;
     }
 
-    public void despawnArmorstands() {
-        despawnArmorstand(armorstandRank1);
-        despawnArmorstand(armorstandRank2);
-        despawnArmorstand(armorstandRank3);
-    }
-
     private void updateArmorstands() {
         updateArmorstand(armorstandRank1, 1);
         updateArmorstand(armorstandRank2, 2);
         updateArmorstand(armorstandRank3, 3);
     }
 
-    private void updateArmorstand(ArmorstandLB armorstandLB, int i) {
-        if (leaderboard.size() < i) return;
+    private void updateArmorstand(ArmorstandLB armorstandLB, int rank) {
+        if (leaderboard.size() < rank) return;
         if (armorstandLB == null) return;
         if (armorstandLB.armorStand == null || armorstandLB.armorStand.isDead()) {
-            armorstandLB.summon();
+            armorstandLB.summon(rank);
         }
-        OfflinePlayer topPlayer = Bukkit.getOfflinePlayer(leaderboard.get(i - 1));
+        OfflinePlayer topPlayer = Bukkit.getOfflinePlayer(leaderboard.get(rank - 1));
         ItemStack playerHead = createPlayerHead(topPlayer);
         int points = playerStatsProvider.apply(topPlayer).getPoints();
-        armorstandLB.armorStand.customName(MessageHelper.createComponent("§6" + i + ". " + topPlayer.getName() + " §7- §e" + points));
+        armorstandLB.armorStand.customName(MessageHelper.createComponent("§6" + rank + ". " + topPlayer.getName() + " §7- §e" + points));
         EntityEquipment equipment = armorstandLB.armorStand.getEquipment();
         equipment.setHelmet(playerHead);
-    }
-
-    private void despawnArmorstand(ArmorstandLB armorstandLB) {
-        if (armorstandLB == null || armorstandLB.armorStand == null) return;
-        Chunk armorstandChunk = armorstandLB.armorStand.getLocation().getChunk();
-        if (!armorstandChunk.isLoaded()) {
-            armorstandChunk.load();
-        }
-        armorstandLB.armorStand.remove();
     }
 
     private ItemStack createPlayerHead(OfflinePlayer player) {
