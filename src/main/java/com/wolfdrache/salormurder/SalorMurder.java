@@ -85,7 +85,7 @@ public class SalorMurder extends JavaPlugin {
         roundManager.unloadAllRounds();
 
         statsManager.despawnArmorstands();
-        statsManager.saveAllPlayerStats();
+        statsManager.saveAllPlayerStats(true);
         getLogger().info("SalorMurder has been disabled!");
     }
 

@@ -30,13 +30,16 @@ public class StatsManager {
 
     public void updateLeaderboard() {
         leaderBoardManager.updateLeaderboard();
+        saveAllPlayerStats(false);
     }
 
-    public void savePlayerStats(Player player) {
+    public void savePlayerStats(Player player, boolean removeAfterSave) {
         if (playerStatsMap.containsKey(player)) {
             PlayerStats stats = playerStatsMap.get(player);
             fileManager.savePlayerStats(player, stats);
-            playerStatsMap.remove(player);
+            if (removeAfterSave) {
+                playerStatsMap.remove(player);
+            }
         }
     }
 
@@ -71,9 +74,9 @@ public class StatsManager {
         sender.sendMessage("§8§m------------------------------");
     }
 
-    public void saveAllPlayerStats() {
+    public void saveAllPlayerStats(boolean removeAfterSave) {
         for (Player player : new HashSet<>(playerStatsMap.keySet())) {
-            savePlayerStats(player);
+            savePlayerStats(player, removeAfterSave);
         }
     }
 
