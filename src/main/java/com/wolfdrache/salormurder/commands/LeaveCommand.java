@@ -20,10 +20,9 @@ public class LeaveCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("Only players can use this command.");
-            return true;
+            return false;
         }
-        roundManager.leavePlayer(player, true);
-        return true;
+        return roundManager.leavePlayer(player, true);
     }
 
     @Override 

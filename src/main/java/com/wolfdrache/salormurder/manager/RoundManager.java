@@ -105,8 +105,8 @@ public class RoundManager {
         }
     }
 
-    public void leavePlayer(Player player, boolean tp) {
-        if (!activePlayers.containsKey(player)) return;
+    public boolean leavePlayer(Player player, boolean tp) {
+        if (!activePlayers.containsKey(player)) return false;
         RoundSM round = activePlayers.get(player);
         PlayerSM playerSM = round.players.get(player);
         RoundScoreBoard.removeScoreBoard(round);
@@ -124,7 +124,6 @@ public class RoundManager {
             if (round.players.isEmpty()) {
                 roundTimer.stopTimer(round);
                 mapManager.unloadWorld(round.map);
-                return;
             }
         } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
             if (playerSM.mode == PlayerMode.PLAYING) {
@@ -134,6 +133,7 @@ public class RoundManager {
                 checkEndRound(round);
             }
         }
+        return true;
     }
 
     public boolean enoughPlayersToStart(RoundSM round) {
