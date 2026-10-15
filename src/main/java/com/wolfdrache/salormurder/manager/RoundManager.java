@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -353,6 +354,9 @@ public class RoundManager {
             stats.roundsLostMurderer++;
         } else {
             stats.roundsLostInnocent++;
+        }
+        for (Player p : round.players.keySet()) {
+            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
         }
         playerSM.mode = PlayerMode.SPECTATING;
         givePlayerSpectatorAttributes(player);
