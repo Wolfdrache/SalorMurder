@@ -22,7 +22,7 @@ public class WorldChangeListener implements Listener {
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;
         if (!player.getWorld().equals(round.map.world)) {
-            roundManager.leavePlayer(player);
+            roundManager.leavePlayer(player, false);
         }
     }
 

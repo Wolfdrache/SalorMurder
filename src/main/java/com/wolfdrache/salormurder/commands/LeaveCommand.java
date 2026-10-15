@@ -22,7 +22,7 @@ public class LeaveCommand implements TabExecutor {
             sender.sendMessage("Only players can use this command.");
             return true;
         }
-        roundManager.leavePlayer(player);
+        roundManager.leavePlayer(player, true);
         return true;
     }
 

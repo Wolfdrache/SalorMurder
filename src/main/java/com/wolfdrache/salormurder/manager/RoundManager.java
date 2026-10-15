@@ -78,7 +78,7 @@ public class RoundManager {
 
     public void joinPlayer(Player player, RoundSM round) {
         if (activePlayers.containsKey(player)) {
-            leavePlayer(player);
+            leavePlayer(player, false);
         }
         joiningPlayers.add(player);
         if (round.mode == RoundMode.WAITING && round.hasFreeSlot()) {
@@ -105,7 +105,7 @@ public class RoundManager {
         }
     }
 
-    public void leavePlayer(Player player) {
+    public void leavePlayer(Player player, boolean tp) {
         if (!activePlayers.containsKey(player)) return;
         RoundSM round = activePlayers.get(player);
         PlayerSM playerSM = round.players.get(player);
@@ -114,7 +114,9 @@ public class RoundManager {
         activePlayers.remove(player);
         MessageHelper.playerLeaveRound(player, round);
         TabHelper.showPlayerToAll(round, player);
-        player.teleport(fileManager.getLeaveLocation());
+        if (tp) {
+            player.teleport(fileManager.getLeaveLocation());
+        }
         givePlayerNormalAttributes(player);
         player.setInvulnerable(true);
         if (round.mode == RoundMode.WAITING) {
@@ -171,7 +173,7 @@ public class RoundManager {
 
     public void resetRound(RoundSM round) {
         for (Player player : new ArrayList<>(round.players.keySet())) {
-            leavePlayer(player);
+            leavePlayer(player, true);
         }
         round.removeAllLootChests();
         bowTimer.stopTimerRound(round);
@@ -417,7 +419,7 @@ public class RoundManager {
     public void stopRound(RoundSM round) {
         round.mode = RoundMode.ENDING;
         for (Player player : new ArrayList<>(round.players.keySet())) {
-            leavePlayer(player);
+            leavePlayer(player, true);
             MessageHelper.sendMessage(player, "§cDie Runde wurde gestoppt.");
         }
         resetRound(round);
@@ -425,7 +427,7 @@ public class RoundManager {
 
     public void editRound(Player player, RoundSM round) {
         if (getRoundByPlayer(player) != null) {
-            leavePlayer(player);
+            leavePlayer(player, false);
         }
         if (round.mode != RoundMode.EDIT) {
             stopRound(round);
@@ -444,7 +446,7 @@ public class RoundManager {
     public void saveRound(RoundSM round) {
         if (round.mode == RoundMode.EDIT) {
             for (Player player : new ArrayList<>(round.players.keySet())) {
-                leavePlayer(player);
+                leavePlayer(player, true);
                 MessageHelper.sendMessage(player, "§aDie Map wurde gespeichert.");
             }
             mapManager.saveWorld(round.map);

@@ -46,7 +46,7 @@ public class InteractionListener implements Listener {
         if (round.mode == RoundMode.EDIT) return;
         if (item.equals(NavItems.leaveItem)) {
             event.setCancelled(true);
-            roundManager.leavePlayer(player);
+            roundManager.leavePlayer(player, true);
             return;
         } else if (item.equals(NavItems.knifeSelectorItem)) {
             event.setCancelled(true);
