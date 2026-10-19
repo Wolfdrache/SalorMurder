@@ -26,7 +26,7 @@ public class LootChest {
         }
     }
     private final static List<LootTable> lootTables = List.of(
-        new LootTable(Material.EMERALD, 3, 1, 100)
+        new LootTable(Material.EMERALD, 2, 1, 100)
     );
 
     public static List<Material> getLootTableMaterials() {
