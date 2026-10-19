@@ -21,7 +21,7 @@ public class TabHelper {
             return;
         }
         
-        String header = "§3§lSailor§c§lMurder\n";
+        String header = "§3§lSailors§c§lMurder\n";
         String footer = "§7Map: §e" + round.map.name +
                 "\n§7Zeit: §e" + formatTime(round.time) +
                 "\n§7Gebaut von: " + round.map.builder;
