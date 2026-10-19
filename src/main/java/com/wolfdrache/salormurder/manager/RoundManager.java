@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffectType;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.helper.MessageHelper;
@@ -118,6 +119,7 @@ public class RoundManager {
             player.teleport(fileManager.getLeaveLocation());
         }
         givePlayerNormalAttributes(player);
+        player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
         player.setInvulnerable(true);
         if (round.mode == RoundMode.WAITING) {
             joinSignManager.updateSign(round);

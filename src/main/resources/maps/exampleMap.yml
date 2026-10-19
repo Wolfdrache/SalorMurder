@@ -2,6 +2,8 @@ name: exampleMap
 worldName: exampleWorld
 builder: exampleBuilder
 
+dolphin: 1
+
 spawnpoints:
   - 0 36 7 90 0
   - 5.5 45 13 45 0

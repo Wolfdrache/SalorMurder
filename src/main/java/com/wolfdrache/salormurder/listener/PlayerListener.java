@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.wolfdrache.salormurder.manager.ChatManager;
@@ -152,6 +154,17 @@ public class PlayerListener implements Listener {
         } else if (round.mode == RoundMode.ENDING) {
             event.setCancelled(true);
             chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());
+        }
+    }
+
+    @EventHandler 
+    public void onPlayerSwimm(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.map.dolphin > 0) return;
+        if (player.isSwimming()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 1, round.map.dolphin - 1, false, false, true));
         }
     }
 }

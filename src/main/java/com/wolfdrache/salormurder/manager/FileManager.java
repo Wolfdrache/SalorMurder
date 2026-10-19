@@ -60,6 +60,8 @@ public class FileManager {
             String worldName = config.getString("worldName");
             String builder = config.getString("builder");
 
+            int dolphin = config.getInt("dolphin", 0);
+
             List<Location> spawnpoints = new ArrayList<>();
             List<String> spawnpointsStrings = config.getStringList("spawnpoints");
             for (String spawnpointString : spawnpointsStrings) {
@@ -72,7 +74,7 @@ public class FileManager {
                 lootchests.add(readLocation(lootchestString));
             }
 
-            maps.add(new MapSM(name, worldName, builder, spawnpoints, lootchests));
+            maps.add(new MapSM(name, worldName, builder, spawnpoints, lootchests, dolphin));
         }
         return maps;
     }
