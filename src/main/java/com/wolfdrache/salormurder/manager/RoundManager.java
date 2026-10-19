@@ -151,7 +151,6 @@ public class RoundManager {
     public void startRound(RoundSM round) {
         World world = mapManager.getOrLoadWorld(round.map);
         mapManager.addWorldToMap(round.map, world);
-        round.initializeLootChests();
         round.time = fileManager.getTime(Time.BEFORE_START);
         round.mode = RoundMode.STARTING;
         joinSignManager.replaceRoundSign(round);
@@ -216,7 +215,7 @@ public class RoundManager {
                 MessageHelper.sendMessage(player, message);
                 MessageHelper.sendMessage(player, murderReveal);
                 PlayerSM playerSM = round.players.get(player);
-                if (playerSM.mode == PlayerMode.PLAYING && playerSM.role == winningRole) {
+                if (playerSM.mode == PlayerMode.PLAYING && playerSM.role.inno == winningRole.inno) {
                     PlayerStats playerStats = statsManager.getPlayerStats(player);
                     playerStats.addWin(winningRole);
                     coinManager.giveCoins(player, winningRole == Role.MURDERER ? Coins.MURDER_WIN : Coins.INNO_WIN);

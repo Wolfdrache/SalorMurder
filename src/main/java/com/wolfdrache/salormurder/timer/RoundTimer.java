@@ -82,12 +82,14 @@ public class RoundTimer {
             XpBarTimer.updateXpBar(round, startingTime);
             if (round.time == 0) {
                 round.mode = RoundMode.RUNNING;
+
+                round.initializeLootChests();
                 return;
             }
             round.time--;
         } else if (round.mode == RoundMode.RUNNING) {
             int lootChestRefill = fileManager.getTime(Time.LOOT_CHEST_REFILL);
-            if (round.time % lootChestRefill == 0) {
+            if (round.time % lootChestRefill == 0 && round.time != 0) {
                 round.refillLootChests();
             }
             round.time++;

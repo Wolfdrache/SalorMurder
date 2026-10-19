@@ -69,10 +69,10 @@ public class DamageListener implements Listener {
                 PlayerStats killerStats = statsManager.getPlayerStats(damager);
                 if (playerSM.role == Role.INNOCENT) {
                     killerStats.killedInnocents++;
-                    coinManager.giveCoins(player, Coins.MURDER_KILL_INNO);
+                    coinManager.giveCoins(damager, Coins.MURDER_KILL_INNO);
                 } else {
                     killerStats.killedDetectives++;
-                    coinManager.giveCoins(player, Coins.MURDER_KILL_DETECTIVE);
+                    coinManager.giveCoins(damager, Coins.MURDER_KILL_DETECTIVE);
                     MessageHelper.detectiveKilled(round);
                 }
                 roundManager.killPlayer(player, round);
@@ -91,24 +91,23 @@ public class DamageListener implements Listener {
         if (!round.players.containsKey(damager)) return;
         PlayerSM playerSM = round.players.get(player);
         PlayerSM damagerSM = round.players.get(damager);
+        PlayerStats killerStats = statsManager.getPlayerStats(damager);
         if (damagerSM.role == Role.MURDERER) {
-            PlayerStats killerStats = statsManager.getPlayerStats(damager);
             if (playerSM.role == Role.INNOCENT) {
                 killerStats.killedInnocents++;
-                coinManager.giveCoins(player, Coins.MURDER_KILL_INNO);
+                coinManager.giveCoins(damager, Coins.MURDER_KILL_INNO);
             } else {
                 killerStats.killedDetectives++;
-                coinManager.giveCoins(player, Coins.MURDER_KILL_DETECTIVE);
+                coinManager.giveCoins(damager, Coins.MURDER_KILL_DETECTIVE);
                 MessageHelper.detectiveKilled(round);
             }
         } else {
-            PlayerStats killerStats = statsManager.getPlayerStats(damager);
             if (playerSM.role == Role.MURDERER) {
                 killerStats.murderersKilled++;
-                coinManager.giveCoins(player, Coins.KILL_MURDER);
+                coinManager.giveCoins(damager, Coins.KILL_MURDER);
             } else {
                 killerStats.randomKills++;
-                coinManager.giveCoins(player, Coins.RANDOM_KILL);
+                coinManager.giveCoins(damager, Coins.RANDOM_KILL);
                 if (playerSM.role == Role.DETECTIVE) {
                     MessageHelper.detectiveKilled(round);
                 }

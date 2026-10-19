@@ -10,9 +10,14 @@ public class PlayerSM {
     }
 
     public static enum Role {
-        INNOCENT,
-        MURDERER,
-        DETECTIVE
+        INNOCENT (true),
+        MURDERER (false),
+        DETECTIVE (true);
+
+        public final boolean inno;
+        Role(boolean inno) {
+            this.inno = inno;
+        }
     }
 
     public PlayerMode mode;

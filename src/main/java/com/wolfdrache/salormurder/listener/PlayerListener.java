@@ -164,7 +164,7 @@ public class PlayerListener implements Listener {
         if (round == null) return;
         if (round.map.dolphin > 0) return;
         if (player.isSwimming()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 1, round.map.dolphin - 1, false, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 200, round.map.dolphin - 1, false, false, false));
         }
     }
 }
