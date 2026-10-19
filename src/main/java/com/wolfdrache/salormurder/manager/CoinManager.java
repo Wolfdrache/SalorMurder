@@ -3,6 +3,7 @@ package com.wolfdrache.salormurder.manager;
 import org.bukkit.entity.Player;
 
 import com.wolfdrache.salormurder.models.ConfigModes.Coins;
+import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.models.PlayerStats;
 
 import net.milkbowl.vault.economy.Economy;
@@ -21,6 +22,7 @@ public class CoinManager {
     public void giveCoins(Player player, Coins coins) {
         int amount = fileManager.getCoins(coins);
         economy.depositPlayer(player, amount);
+        MessageHelper.sendMessage(player, "§aDu hast §6" + amount + " Coins §aerhalten.");
         PlayerStats stats = statsManager.getPlayerStats(player);
         stats.coins += amount;
     }
