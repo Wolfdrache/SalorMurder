@@ -48,9 +48,9 @@ public class SalorMurder extends JavaPlugin {
         fileManager = new FileManager(this);
         leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
-        coinManager = new CoinManager(economy, fileManager);
-        mapManager = new MapManager(fileManager);
         statsManager = new StatsManager(fileManager, leaderBoardFileManager);
+        coinManager = new CoinManager(economy, fileManager, statsManager);
+        mapManager = new MapManager(fileManager);
         roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
