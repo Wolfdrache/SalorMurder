@@ -70,5 +70,12 @@
             <version>3da28ff96d</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.Wolfdrache.Party</groupId>
+            <artifactId>party-api</artifactId>
+            <version>-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

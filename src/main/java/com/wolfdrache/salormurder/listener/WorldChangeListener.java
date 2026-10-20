@@ -36,7 +36,7 @@ public class WorldChangeListener implements Listener {
         RoundSM round = roundManager.getRoundByLocation(player.getLocation());
         if (round == null) return;
         if (round.mode == RoundMode.RUNNING) {
-            roundManager.joinPlayer(player, round);
+            roundManager.joinPlayer(player, round, false);
             return;
         } else if (round.mode == RoundMode.EDIT) {
             roundManager.editRound(player, round);

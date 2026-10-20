@@ -17,6 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
+import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
@@ -34,6 +35,7 @@ import com.wolfdrache.salormurder.timer.RoundTimer;
 import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 
 public class RoundManager {
+    private final PartyService partyService;
     private final MurderKnifesAPI murderKnifes;
     
     private final MapManager mapManager;
@@ -52,7 +54,8 @@ public class RoundManager {
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+    public RoundManager(PartyService partyService, MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+        this.partyService = partyService;
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
         this.statsManager = statsManager;
@@ -77,7 +80,13 @@ public class RoundManager {
         }
     }
 
-    public void joinPlayer(Player player, RoundSM round) {
+    public void joinPlayer(Player player, RoundSM round, boolean checkParty) {
+        if (checkParty) {
+            if (round.mode == RoundMode.WAITING) {
+                doPartyJoin(player, round);
+                return;
+            }
+        }
         if (activePlayers.containsKey(player)) {
             leavePlayer(player, false);
         }
@@ -103,6 +112,22 @@ public class RoundManager {
             givePlayerSpectatorAttributes(player);
             MessageHelper.playerSpectateRound(player, round);
             player.setGameMode(GameMode.ADVENTURE);
+        }
+    }
+    
+    private void doPartyJoin(Player player, RoundSM round) {
+        if (partyService.isInParty(player)) {
+            if (partyService.isPartyLeader(player)) {
+                List<Player> partyMembers = partyService.getPartyMembers(player);
+                for (Player partyMember : partyMembers) {
+                    joinPlayer(partyMember, round, false);
+                }
+            } else {
+                MessageHelper.sendMessage(player, "§cNur der Party-Leader kann einer Runde beitreten.");
+                return;
+            }
+        } else {
+            joinPlayer(player, round, false);
         }
     }
 

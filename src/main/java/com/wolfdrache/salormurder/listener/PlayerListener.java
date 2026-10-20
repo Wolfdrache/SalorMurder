@@ -147,10 +147,7 @@ public class PlayerListener implements Listener {
             if (playerSW == null || playerSW.mode == PlayerMode.SPECTATING){
                 event.setCancelled(true);
                 chatManager.sendSpectatorMessage(player, round, event.getMessage());
-            } else {
-                event.setCancelled(true);
-                chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());
-            }
+            } 
         } else if (round.mode == RoundMode.ENDING) {
             event.setCancelled(true);
             chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());

@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
+import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.leaderboard.*;
@@ -17,6 +18,7 @@ public class SalorMurder extends JavaPlugin {
 
     private Economy economy;
     private MurderKnifesAPI murderKnifes;
+    private PartyService partyService;
 
     private FileManager fileManager;
     private MapManager mapManager;
@@ -45,13 +47,18 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        if (!setupPartyService()) {
+            getLogger().severe("PartyService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         fileManager = new FileManager(this);
         leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
         statsManager = new StatsManager(fileManager, leaderBoardFileManager);
         coinManager = new CoinManager(economy, fileManager, statsManager);
         mapManager = new MapManager(fileManager);
-        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
+        roundManager = new RoundManager(partyService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
         roundTimer = new RoundTimer(this, roundManager, fileManager);
@@ -112,6 +119,16 @@ public class SalorMurder extends JavaPlugin {
         }
 
         murderKnifes = provider.getProvider();
+        return true;
+    }
+
+    private boolean setupPartyService() {
+        RegisteredServiceProvider<PartyService> rsp = getServer().getServicesManager().getRegistration(PartyService.class);
+        if (rsp == null) {
+            return false;
+        }
+
+        partyService = rsp.getProvider();
         return true;
     }
 }

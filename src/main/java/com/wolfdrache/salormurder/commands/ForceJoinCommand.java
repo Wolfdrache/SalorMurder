@@ -67,7 +67,7 @@ public class ForceJoinCommand implements TabExecutor {
         }
 
         for (Player targetPlayer : targetPlayers) {
-            roundManager.joinPlayer(targetPlayer, round);
+            roundManager.joinPlayer(targetPlayer, round, false);
         }
         return true;
     }

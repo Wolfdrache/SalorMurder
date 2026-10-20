@@ -29,7 +29,7 @@ public class JoinCommand implements TabExecutor {
             player.sendMessage("Round not found.");
             return true;
         }
-        roundManager.joinPlayer(player, round);
+        roundManager.joinPlayer(player, round, true);
         return true;
     }
 

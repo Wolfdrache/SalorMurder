@@ -65,7 +65,7 @@ public class JoinSignManager {
         if (!joinSigns.containsKey(signLocation)) return; // Not a join sign
         RoundSM round = joinSigns.get(signLocation);
         if (round == null) return; // No round associated with this sign
-        roundManager.joinPlayer(player, round);
+        roundManager.joinPlayer(player, round, true);
     }
 
     public boolean hasRoundSign(RoundSM round) {
