@@ -71,7 +71,7 @@ public class SalorMurder extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(teleporterGui, this);
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnifes, roundManager, teleporterGui), this);
-        getServer().getPluginManager().registerEvents(new DamageListener(murderKnifes, roundManager, statsManager, coinManager), this);
+        getServer().getPluginManager().registerEvents(new DamageListener(murderKnifes, roundManager, statsManager, coinManager, bowTimer), this);
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, chatManager, bowTimer), this);
         getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager, fileManager), this);

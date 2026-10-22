@@ -22,6 +22,7 @@ public class PlayerSM {
 
     public PlayerMode mode;
     public Role role = null;
+    public boolean hasRandomKilled = false;
 
     public PlayerSM(PlayerMode mode) {
         this.mode = mode;

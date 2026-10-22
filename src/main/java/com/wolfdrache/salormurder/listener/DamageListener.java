@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.CoinManager;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.manager.StatsManager;
@@ -24,18 +25,21 @@ import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.PlayerSM.Role;
 import com.wolfdrache.salormurder.models.PlayerStats;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
+import com.wolfdrache.salormurder.timer.BowTimer;
 
 public class DamageListener implements Listener {
     private final MurderKnifesAPI murderKnifes;
     private final RoundManager roundManager;
     private final StatsManager statsManager;
     private final CoinManager coinManager;
+    private final BowTimer bowTimer;
 
-    public DamageListener(MurderKnifesAPI murderKnifes, RoundManager roundManager, StatsManager statsManager, CoinManager coinManager) {
+    public DamageListener(MurderKnifesAPI murderKnifes, RoundManager roundManager, StatsManager statsManager, CoinManager coinManager, BowTimer bowTimer) {
         this.murderKnifes = murderKnifes;
         this.roundManager = roundManager;
         this.statsManager = statsManager;
         this.coinManager = coinManager;
+        this.bowTimer = bowTimer;
     }
 
     @EventHandler 
@@ -108,6 +112,14 @@ public class DamageListener implements Listener {
             } else {
                 killerStats.randomKills++;
                 coinManager.giveCoins(damager, Coins.RANDOM_KILL);
+                damagerSM.hasRandomKilled = true;
+                damager.getInventory().remove(NavItems.bowItem);
+                damager.getInventory().remove(NavItems.arrowItem);
+                damager.getInventory().remove(NavItems.arrowCooldownItem);
+
+                if (!roundManager.checkPlayerGetTrident(damager, round)) {
+                    bowTimer.stopBowTimer(player);
+                }
                 if (playerSM.role == Role.DETECTIVE) {
                     MessageHelper.detectiveKilled(round);
                 }

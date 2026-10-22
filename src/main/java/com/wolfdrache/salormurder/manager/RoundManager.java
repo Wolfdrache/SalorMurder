@@ -400,16 +400,23 @@ public class RoundManager {
 
     public void playerLootChest(RoundSM round, Player player, Location location) {
         round.playerLootChest(player, location);
-        checkPlayerGetTrident(player);
+        checkPlayerGetTrident(player, round);
     }
 
-    public void checkPlayerGetTrident(Player player) {
-        if (player.getInventory().contains(Material.BOW)) return;
+    public boolean checkPlayerGetTrident(Player player, RoundSM round) {
+        if (player.getInventory().contains(Material.BOW)) return true;
         ItemStack tridentCost = fileManager.getTridentCost();
+
+        PlayerSM playerSM = round.players.get(player);
+        if (playerSM.hasRandomKilled) {
+            tridentCost.setAmount((int) (tridentCost.getAmount() * 1.5));
+        }
+
         if (tridentCost != null && player.getInventory().containsAtLeast(tridentCost, tridentCost.getAmount())) {
             player.getInventory().removeItem(tridentCost);
             player.getInventory().setItem(0, NavItems.bowItem);
             player.getInventory().setItem(8, NavItems.arrowItem);
+            return true;
         } else {
             int missingAmount = tridentCost.getAmount() - player.getInventory().all(tridentCost.getType()).values().stream().mapToInt(ItemStack::getAmount).sum();
             if (missingAmount > 0) {
@@ -417,6 +424,7 @@ public class RoundManager {
                 MessageHelper.sendMessage(player, clueMessage);
             }
         }
+        return false;
     }
 
     public void givePlayerWaitingAttributes(Player player) {

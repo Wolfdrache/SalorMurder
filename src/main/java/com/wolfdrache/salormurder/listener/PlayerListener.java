@@ -96,7 +96,7 @@ public class PlayerListener implements Listener {
             event.getItem().remove();
             return;
         }
-        roundManager.checkPlayerGetTrident(player);
+        roundManager.checkPlayerGetTrident(player, round);
     }
 
     @EventHandler 
