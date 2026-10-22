@@ -17,19 +17,21 @@ public class TabHelper {
             throw new IllegalStateException("Plugin instance is not set. Call setPlugin() before using this method.");
         }
 
-        if (round.map.world == null) {
-            return;
-        }
+        // if (round.map.world == null) {
+        //     return;
+        // }
         
         String header = "§3§lSailors§c§lMurder\n";
         String footer = "§7Map: §e" + round.map.name +
                 "\n§7Zeit: §e" + formatTime(round.time) +
                 "\n§7Gebaut von: " + round.map.builder;
 
-        round.map.world.sendPlayerListHeader(MessageHelper.createComponent(header));
-        round.map.world.sendPlayerListFooter(MessageHelper.createComponent(footer));
+        // round.map.world.sendPlayerListHeader(MessageHelper.createComponent(header));
+        // round.map.world.sendPlayerListFooter(MessageHelper.createComponent(footer));
         for (Player player : round.players.keySet()) {
             var playerSM = round.players.get(player);
+            player.sendPlayerListHeader(MessageHelper.createComponent(header));
+            player.sendPlayerListFooter(MessageHelper.createComponent(footer));
             for (Player otherPlayer : round.players.keySet()) {
                 if (otherPlayer.equals(player)) {
                     continue;

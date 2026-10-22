@@ -47,7 +47,7 @@ public class RoundManager {
     private RoundTimer roundTimer;
     private BowTimer bowTimer;
 
-    private final Location waitingLobby;
+    public final Location waitingLobby;
 
     private final List<RoundSM> rounds = new ArrayList<>();
     private final Map<Player, RoundSM> activePlayers = new HashMap<>();

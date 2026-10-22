@@ -66,6 +66,9 @@ public class RoundTimer {
         if (round.mode == RoundMode.WAITING) {
             int lobbyTime = fileManager.getTime(Time.LOBBY);
             XpBarTimer.updateXpBar(round, lobbyTime);
+            for (Player player : round.players.keySet()) {
+                player.sendActionBar(MessageHelper.createComponent("§c" + round.map.name));
+            }
             if (!roundManager.enoughPlayersToStart(round)) {
                 round.time = lobbyTime;
                 return;
