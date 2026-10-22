@@ -39,3 +39,13 @@ permissions:
   salormurder.smadmin:
     description: Allows the player to use admin commands for salormurder.
     default: false
+  salormurder.smadmin.map:
+    description: Allows the player to manage maps for salormurder.
+    default: false
+    children: 
+      salormurder.smadmin: true
+  salormurder.smadmin.round:
+    description: Allows the player to manage rounds for salormurder.
+    default: false
+    children: 
+      salormurder.smadmin: true

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.manager.RoundManager;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
@@ -37,10 +38,22 @@ public class AdminCommand implements TabExecutor {
             return true;
         }
         if (subCommand.equalsIgnoreCase("edit")) {
+            if (!player.hasPermission("salormurder.smadmin.map")) {
+                MessageHelper.sendMessage(player, "§cDu kannst keine Runden bearbeiten.");
+                return true;
+            }
             roundManager.editRound(player, round);
         } else if (subCommand.equalsIgnoreCase("stop")) {
+            if (!player.hasPermission("salormurder.smadmin.map")) {
+                MessageHelper.sendMessage(player, "§cDu kannst keine Runden stoppen.");
+                return true;
+            }
             roundManager.stopRound(round);
         } else if (subCommand.equalsIgnoreCase("kill")) {
+            if (!player.hasPermission("salormurder.smadmin.round")) {
+                MessageHelper.sendMessage(player, "§cDu kannst keine Spieler töten.");
+                return true;
+            }
             String targetName = args[2];
             Player target = player.getServer().getPlayer(targetName);
             if (target == null) {
@@ -49,6 +62,10 @@ public class AdminCommand implements TabExecutor {
             }
             roundManager.killPlayer(target, round);
         } else if (subCommand.equalsIgnoreCase("save")) {
+            if (!player.hasPermission("salormurder.smadmin.map")) {
+                MessageHelper.sendMessage(player, "§cDu kannst keine Runden speichern.");
+                return true;
+            }
             roundManager.saveRound(round);
         }
         return true;
