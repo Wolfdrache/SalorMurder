@@ -88,6 +88,7 @@ public class RoundManager {
             }
         }
         if (activePlayers.containsKey(player)) {
+            if (activePlayers.get(player) == round) return;
             leavePlayer(player, false);
         }
         joiningPlayers.add(player);
