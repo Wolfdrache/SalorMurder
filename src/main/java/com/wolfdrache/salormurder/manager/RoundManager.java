@@ -100,7 +100,7 @@ public class RoundManager {
             player.teleport(waitingLobby);
             round.addPlayer(player);
             activePlayers.put(player, round);
-            giveItems(player);
+            giveRoleItems(player);
             joinSignManager.updateSign(round);
             MessageHelper.playerJoinRound(player, round);
             givePlayerWaitingAttributes(player);
@@ -109,7 +109,7 @@ public class RoundManager {
             player.teleport(round.map.world.getSpawnLocation());
             round.addPlayer(player);
             activePlayers.put(player, round);
-            giveItems(player);
+            giveRoleItems(player);
             givePlayerSpectatorAttributes(player);
             MessageHelper.playerSpectateRound(player, round);
             player.setGameMode(GameMode.ADVENTURE);
@@ -194,7 +194,7 @@ public class RoundManager {
             PlayerSM playerSM = round.players.get(player);
             playerSM.mode = PlayerMode.ENDING;
             givePlayerWaitingAttributes(player);
-            giveItems(player);
+            giveRoleItems(player);
         }
     }
 
@@ -288,13 +288,13 @@ public class RoundManager {
             playerSM.mode = PlayerMode.PLAYING;
             spawnPoints.remove(spawnLocation);
             givePlayerNormalAttributes(player);
-            giveItems(player);
+            giveRoleItems(player);
             player.setGameMode(GameMode.SURVIVAL);
         }
         MessageHelper.sendRoleTitle(round);
     }
 
-    private void giveItems(Player player) {
+    public void giveRoleItems(Player player) {
         PlayerInventory inventory = player.getInventory();
         inventory.clear();
         RoundSM round = activePlayers.get(player);
@@ -312,7 +312,11 @@ public class RoundManager {
                         break;
                     case DETECTIVE:
                         inventory.setItem(0, NavItems.bowItem);
-                        inventory.setItem(8, NavItems.arrowItem);
+                        if (round.mode == RoundMode.RUNNING) {
+                            inventory.setItem(8, NavItems.arrowItem);
+                        } else {
+                            inventory.setItem(8, NavItems.arrowCooldownItem);
+                        }
                         break;
                     case INNOCENT:
                         break;
@@ -391,7 +395,7 @@ public class RoundManager {
         givePlayerSpectatorAttributes(player);
         ItemStack tridentCost = fileManager.getTridentCost();
         round.addLootChest(player.getLocation(), player, tridentCost);
-        giveItems(player);
+        giveRoleItems(player);
         checkEndRound(round);
     }
 

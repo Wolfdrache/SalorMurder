@@ -87,6 +87,7 @@ public class RoundTimer {
                 round.mode = RoundMode.RUNNING;
 
                 round.initializeLootChests();
+                roundManager.giveRoleItems((Player) round.detective);
                 return;
             }
             round.time--;
