@@ -389,7 +389,8 @@ public class RoundManager {
         }
         playerSM.mode = PlayerMode.SPECTATING;
         givePlayerSpectatorAttributes(player);
-        round.addLootChest(player.getLocation(), player);
+        ItemStack tridentCost = fileManager.getTridentCost();
+        round.addLootChest(player.getLocation(), player, tridentCost);
         giveItems(player);
         checkEndRound(round);
     }

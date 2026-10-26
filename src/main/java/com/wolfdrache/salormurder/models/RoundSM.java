@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 
 public class RoundSM {
@@ -99,7 +100,7 @@ public class RoundSM {
         lootChest.armorstand.remove();
     }
 
-    public void addLootChest(Location location, Player player) {
+    public void addLootChest(Location location, Player player, ItemStack tridentCost) {
         LootChest lootChest = new LootChest(location);
         lootChest.items.clear();
         PlayerInventory inventory = player.getInventory();
@@ -107,6 +108,13 @@ public class RoundSM {
             if (inventory.contains(material)) {
                 int amount = inventory.all(material).values().stream().mapToInt(ItemStack::getAmount).sum();
                 lootChest.items.put(material, amount);
+            }
+        }
+        if (tridentCost != null) {
+            if (inventory.contains(NavItems.bowItem)) {
+                int amount = lootChest.items.getOrDefault(tridentCost.getType(), 0);
+                amount += tridentCost.getAmount();
+                lootChest.items.put(tridentCost.getType(), amount);
             }
         }
         lootChests.put(location, lootChest);

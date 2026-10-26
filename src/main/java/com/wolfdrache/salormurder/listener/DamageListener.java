@@ -1,6 +1,7 @@
 package com.wolfdrache.salormurder.listener;
 
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -79,6 +80,7 @@ public class DamageListener implements Listener {
                     coinManager.giveCoins(damager, Coins.MURDER_KILL_DETECTIVE);
                     MessageHelper.detectiveKilled(round);
                 }
+                bowTimer.stopBowTimer(player);
                 roundManager.killPlayer(player, round);
             }
         }
@@ -118,7 +120,7 @@ public class DamageListener implements Listener {
                 damager.getInventory().remove(NavItems.arrowCooldownItem);
 
                 if (!roundManager.checkPlayerGetTrident(damager, round)) {
-                    bowTimer.stopBowTimer(player);
+                    bowTimer.stopBowTimer(damager);
                 }
                 if (playerSM.role == Role.DETECTIVE) {
                     MessageHelper.detectiveKilled(round);
@@ -173,5 +175,14 @@ public class DamageListener implements Listener {
         if (playerSM.mode == PlayerMode.SPECTATING) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler 
+    public void onArmorStandDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof ArmorStand armorStand)) return;
+        RoundSM round = roundManager.getRoundByLocation(armorStand.getLocation());
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
     }
 }
