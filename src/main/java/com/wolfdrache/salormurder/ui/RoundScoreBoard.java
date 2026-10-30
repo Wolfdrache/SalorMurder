@@ -49,9 +49,9 @@ public class RoundScoreBoard {
         switch (playerSM.mode) {
             case PLAYING:
                 switch (playerSM.role) {
-                    case DETECTIVE: return "§aDetektiv";
+                    case DETECTIVE: return "§bDetektiv";
                     case MURDERER: return "§cMörder";
-                    case INNOCENT: return "§bUnschuldiger";
+                    case INNOCENT: return "§aUnschuldiger";
                 }
             case SPECTATING:
                 return "§3Zuschauer";

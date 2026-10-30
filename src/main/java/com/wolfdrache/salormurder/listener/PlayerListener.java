@@ -161,16 +161,13 @@ public class PlayerListener implements Listener {
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) round = roundManager.getRoundByLocation(player.getLocation());
         if (round == null) return;
-        if (round.mode == RoundMode.WAITING || round.mode == RoundMode.EDIT) return;
+        if (round.mode == RoundMode.WAITING || round.mode == RoundMode.EDIT || round.mode == RoundMode.ENDING) return;
         PlayerSM playerSW = round.players.get(player);
         if (round.mode == RoundMode.RUNNING || round.mode == RoundMode.STARTING) {
             if (playerSW == null || playerSW.mode == PlayerMode.SPECTATING){
                 event.setCancelled(true);
                 chatManager.sendSpectatorMessage(player, round, event.getMessage());
             } 
-        } else if (round.mode == RoundMode.ENDING) {
-            event.setCancelled(true);
-            chatManager.sendGlobalMessage(player, playerSW, round, event.getMessage());
         }
     }
 

@@ -80,7 +80,6 @@ public class DamageListener implements Listener {
                     coinManager.giveCoins(damager, Coins.MURDER_KILL_DETECTIVE);
                     MessageHelper.detectiveKilled(round);
                 }
-                bowTimer.stopBowTimer(player);
                 roundManager.killPlayer(player, round);
             }
         }

@@ -10,6 +10,7 @@ import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 
@@ -32,7 +33,7 @@ public class MessageHelper {
     }
 
     public static Component createComponent(String text) {
-        return LegacyComponentSerializer.legacySection().deserialize(text);
+        return LegacyComponentSerializer.legacySection().deserialize(text).decoration(TextDecoration.ITALIC, false);
     }
 
     public static void playerJoinRound(Player player, RoundSM round) {
