@@ -46,7 +46,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler 
     public void onPlayerJoin(PlayerJoinEvent event) {
-        statsManager.loadPlayerStats(event.getPlayer());
+        Player player = event.getPlayer();
+        statsManager.loadPlayerStats(player);
+        player.setMaximumAir(300);
     }
 
     @EventHandler
