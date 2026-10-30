@@ -178,8 +178,11 @@ public class PlayerListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;
-        event.setCancelled(true);
-        player.setRemainingAir(player.getMaximumAir());
+
+        if (event.getAmount() < player.getRemainingAir()) {
+            event.setCancelled(true);
+        }
+
         if (round.map.dolphin <= 0) return;
         if (player.isInWater()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 200, round.map.dolphin - 1, false, false, false));
@@ -191,8 +194,10 @@ public class PlayerListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;
-        event.setCancelled(true);
-        player.setFoodLevel(20);
-        player.setSaturation(20);
+        if (event.getFoodLevel() < 20) {
+            event.setCancelled(true);
+            player.setFoodLevel(20);
+            player.setSaturation(20);
+        }
     }
 }
