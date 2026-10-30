@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
@@ -391,6 +392,8 @@ public class RoundManager {
         for (Player p : round.players.keySet()) {
             p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
         }
+        player.damage(0);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false, false, false));
         playerSM.mode = PlayerMode.SPECTATING;
         givePlayerSpectatorAttributes(player);
         ItemStack tridentCost = fileManager.getTridentCost();

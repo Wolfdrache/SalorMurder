@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -55,6 +56,15 @@ public class PlayerListener implements Listener {
     @EventHandler 
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        if (round.mode == RoundMode.EDIT) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler 
+    public void onHandSwap(PlayerSwapHandItemsEvent event) {
+        Player player = event.getPlayer();
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;
         if (round.mode == RoundMode.EDIT) return;
