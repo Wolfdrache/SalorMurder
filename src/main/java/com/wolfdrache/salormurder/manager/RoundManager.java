@@ -289,7 +289,7 @@ public class RoundManager {
             spawnPoints.remove(spawnLocation);
             givePlayerNormalAttributes(player);
             giveRoleItems(player);
-            player.setGameMode(GameMode.SURVIVAL);
+            player.setGameMode(GameMode.ADVENTURE);
         }
         MessageHelper.sendRoleTitle(round);
     }

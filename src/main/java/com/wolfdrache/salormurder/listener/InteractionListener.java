@@ -113,7 +113,8 @@ public class InteractionListener implements Listener {
         if (block.getType().equals(Material.LEVER)) return true;
         if (block.getType().name().contains("FENCE_GATE")) return true;
         if (block.getType().name().contains("PRESSURE_PLATE")) return true;
-        return false;
+        if (block.getType().isInteractable()) return false;
+        return true;
     }
 
     @EventHandler 
