@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -52,14 +51,6 @@ public class RoundTimer {
         if (round.mode == RoundMode.EDIT) {
             stopTimer(round);
             return;
-        }
-
-        for (Player player : round.players.keySet()) {
-            player.setSaturation(20);
-            player.setFoodLevel(20);
-            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            player.setMaximumAir(20);
-            player.setRemainingAir(20);
         }
 
         TabHelper.updateTabList(round);

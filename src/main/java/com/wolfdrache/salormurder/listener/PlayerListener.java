@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityAirChangeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -172,13 +174,24 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler 
-    public void onPlayerSwimm(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+    public void onAirChange(EntityAirChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
         RoundSM round = roundManager.getRoundByPlayer(player);
         if (round == null) return;
+        event.setCancelled(true);
         if (round.map.dolphin <= 0) return;
         if (player.isInWater()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 200, round.map.dolphin - 1, false, false, false));
         }
+    }
+
+    @EventHandler 
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        RoundSM round = roundManager.getRoundByPlayer(player);
+        if (round == null) return;
+        event.setCancelled(true);
+        player.setFoodLevel(20);
+        player.setSaturation(20);
     }
 }
