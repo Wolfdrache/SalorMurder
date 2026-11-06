@@ -7,27 +7,12 @@ import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.RoundSM;
 
 public class TabHelper {
-    private static SalorMurder plugin;
-    public static void setPlugin(SalorMurder pluginInstance) {
-        plugin = pluginInstance;
-    }
 
     public static void updateTabList(RoundSM round) {
-        if (plugin == null) {
-            throw new IllegalStateException("Plugin instance is not set. Call setPlugin() before using this method.");
-        }
-
-        // if (round.map.world == null) {
-        //     return;
-        // }
-        
         String header = "§3§lSailors§c§lMurder\n";
         String footer = "§7Map: §e" + round.map.name +
                 "\n§7Zeit: §e" + formatTime(round.time) +
                 "\n§7Gebaut von: " + round.map.builder;
-
-        // round.map.world.sendPlayerListHeader(MessageHelper.createComponent(header));
-        // round.map.world.sendPlayerListFooter(MessageHelper.createComponent(footer));
         for (Player player : round.players.keySet()) {
             var playerSM = round.players.get(player);
             player.sendPlayerListHeader(MessageHelper.createComponent(header));
@@ -37,9 +22,9 @@ public class TabHelper {
                     continue;
                 }
                 if (playerSM == null || playerSM.mode == PlayerMode.SPECTATING) {
-                    otherPlayer.hidePlayer(plugin, player);
+                    otherPlayer.hidePlayer(SalorMurder.getInstance(), player);
                 } else if (playerSM.mode == PlayerMode.PLAYING || playerSM.mode == PlayerMode.ENDING) {
-                    otherPlayer.showPlayer(plugin, player);
+                    otherPlayer.showPlayer(SalorMurder.getInstance(), player);
                 }
             }
         }
@@ -54,7 +39,7 @@ public class TabHelper {
     public static void showPlayerToAll(RoundSM round, Player player) {
         for (Player otherPlayer : round.players.keySet()) {
             if (!otherPlayer.equals(player)) {
-                otherPlayer.showPlayer(plugin, player);
+                otherPlayer.showPlayer(SalorMurder.getInstance(), player);
             }
         }
     }
