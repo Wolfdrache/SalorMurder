@@ -4,12 +4,34 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.milkbowl.vault.economy.Economy;
-import com.wolfdrache.murderknifes.api.MurderKnfesAPI;
+import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
+import com.wolfdrache.salormurder.commands.*;
+import com.wolfdrache.salormurder.helper.TabHelper;
+import com.wolfdrache.salormurder.leaderboard.*;
+import com.wolfdrache.salormurder.listener.*;
+import com.wolfdrache.salormurder.manager.*;
+import com.wolfdrache.salormurder.timer.*;
+import com.wolfdrache.salormurder.ui.*;
 
 public class SalorMurder extends JavaPlugin {
 
     private Economy economy;
-    private MurderKnfesAPI murderKnfes;
+    private MurderKnifesAPI murderKnifes;
+
+    private FileManager fileManager;
+    private MapManager mapManager;
+    private RoundManager roundManager;
+    private StatsManager statsManager;
+    private JoinSignManager joinSignManager;
+    private CoinManager coinManager;
+    private ChatManager chatManager;
+
+    private RoundTimer roundTimer;
+    private BowTimer bowTimer;
+
+    private TeleporterGui teleporterGui;
+
+    private LeaderBoardFileManager leaderBoardFileManager;
 
     @Override
     public void onEnable(){
@@ -18,17 +40,52 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (!setupMurderKnfes()) {
+        if (!setupMurderKnifes()) {
             getLogger().severe("MurderKnifes API not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        
+        fileManager = new FileManager(this);
+        leaderBoardFileManager = new LeaderBoardFileManager(this);
+        chatManager = new ChatManager();
+        statsManager = new StatsManager(fileManager, leaderBoardFileManager);
+        coinManager = new CoinManager(economy, fileManager, statsManager);
+        mapManager = new MapManager(fileManager);
+        roundManager = new RoundManager(murderKnifes, mapManager, statsManager, coinManager, fileManager);
+
+        joinSignManager = new JoinSignManager(roundManager, fileManager);
+        roundTimer = new RoundTimer(this, roundManager, fileManager);
+        bowTimer = new BowTimer(this, fileManager);
+        roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
+
+        teleporterGui = new TeleporterGui(roundManager);
+
+        TabHelper.setPlugin(this);
+
+        getServer().getPluginManager().registerEvents(teleporterGui, this);
+        getServer().getPluginManager().registerEvents(new InteractionListener(murderKnifes, roundManager, teleporterGui), this);
+        getServer().getPluginManager().registerEvents(new DamageListener(murderKnifes, roundManager, statsManager, coinManager), this);
+        getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, chatManager, bowTimer), this);
+        getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager), this);
+        getServer().getPluginManager().registerEvents(new LeaderBoardListener(), this);
+
+        getCommand("joinsm").setExecutor(new JoinCommand(roundManager));
+        getCommand("leavesm").setExecutor(new LeaveCommand(roundManager));
+        getCommand("startsm").setExecutor(new StartCommand(roundManager));
+        getCommand("statssm").setExecutor(new StatsCommand(statsManager));
+        getCommand("forcejoinsm").setExecutor(new ForceJoinCommand(roundManager));
+        getCommand("smadmin").setExecutor(new AdminCommand(roundManager));
+
         getLogger().info("SalorMurder has been enabled!");
     }
     
     @Override
     public void onDisable(){
+        roundManager.unloadAllRounds();
+
+        statsManager.despawnArmorstands();
+        statsManager.saveAllPlayerStats(true);
         getLogger().info("SalorMurder has been disabled!");
     }
 
@@ -46,15 +103,15 @@ public class SalorMurder extends JavaPlugin {
         return true;
     }
 
-    private boolean setupMurderKnfes() {
-        RegisteredServiceProvider<MurderKnfesAPI> provider = getServer().getServicesManager().getRegistration(MurderKnfesAPI.class);
+    private boolean setupMurderKnifes() {
+        RegisteredServiceProvider<MurderKnifesAPI> provider = getServer().getServicesManager().getRegistration(MurderKnifesAPI.class);
 
         if (provider == null) {
             getLogger().severe("MurderKnifes API not found!");
             return false;
         }
 
-        murderKnfes = provider.getProvider();
+        murderKnifes = provider.getProvider();
         return true;
     }
 }

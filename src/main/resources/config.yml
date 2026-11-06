@@ -1,0 +1,34 @@
+time:
+  lobby: 60
+  before_start: 5
+  end: 30
+  trident_reload: 10
+  loot_chest_refill: 30
+
+coins:
+  murder_kill_detective: 10
+  murder_kill_inno: 5
+  kill_murder: 5
+  random_kill: -5
+  murder_win: 10
+  inno_win: 10
+
+leaveLocation:
+  world: watermurder
+  position: 50.5 64.0 50.5 90 0
+
+lobbyLocation:
+  world: watermurder
+  position: -19.5 33 111.5 90 0
+
+joinSigns:
+  - world: world
+    position: 50.5 64.0 50.5
+  - world: world
+    position: 60.5 64.0 60.5
+
+minPlayers: 2
+
+trident:
+  material: EMERALD
+  amount: 10
