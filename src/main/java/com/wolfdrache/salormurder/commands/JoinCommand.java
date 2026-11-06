@@ -26,7 +26,7 @@ public class JoinCommand implements TabExecutor {
         String roundName = args.length > 0 ? args[0] : "";
         RoundSM round = roundManager.getRoundByName(roundName);
         if (round == null) {
-            player.sendMessage("Round not found.");
+            player.sendMessage("§cRunde nicht gefunden!");
             return true;
         }
         roundManager.joinPlayer(player, round, true);

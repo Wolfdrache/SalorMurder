@@ -29,12 +29,12 @@ public class AdminCommand implements TabExecutor {
         String roundName = args[0];
         RoundSM round = roundManager.getRoundByName(roundName);
         if (round == null) {
-            player.sendMessage("Round not found.");
+            player.sendMessage("§cRunde nicht gefunden.");
             return true;
         }
         String subCommand = args[1];
         if (!subCommands.contains(subCommand)) {
-            player.sendMessage("Invalid sub-command.");
+            player.sendMessage("§cUngültiger Unterbefehl.");
             return true;
         }
         if (subCommand.equalsIgnoreCase("edit")) {
@@ -57,7 +57,7 @@ public class AdminCommand implements TabExecutor {
             String targetName = args[2];
             Player target = player.getServer().getPlayer(targetName);
             if (target == null) {
-                player.sendMessage("Player not found.");
+                player.sendMessage("§cSpieler nicht gefunden.");
                 return true;
             }
             roundManager.killPlayer(target, round);

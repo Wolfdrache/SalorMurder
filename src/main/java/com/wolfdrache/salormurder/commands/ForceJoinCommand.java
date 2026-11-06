@@ -31,7 +31,7 @@ public class ForceJoinCommand implements TabExecutor {
         }
 
         if (args.length < 2) {
-            // MessageHelper.sendMessage(player, "§cNutzung: /forcejoinbw <@r | [Runde]> <@a | [Spieler1] [Spieler2] ...>");
+            MessageHelper.sendMessage(player, "§cFehlende Runde oder Spieler.");
             return true;
         }
 
