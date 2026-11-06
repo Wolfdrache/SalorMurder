@@ -28,13 +28,11 @@ public class BowTimer {
         }
     }
 
-    private final SalorMurder plugin;
     private final FileManager fileManager;
 
     private final Map<Player, Data> bowTasks = new HashMap<>();
 
-    public BowTimer(SalorMurder plugin, FileManager fileManager) {
-        this.plugin = plugin;
+    public BowTimer(FileManager fileManager) {
         this.fileManager = fileManager;
     }
 
@@ -43,7 +41,7 @@ public class BowTimer {
         if (data != null && !data.task.isCancelled()) {
             data.task.cancel();
         }
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        BukkitTask task = Bukkit.getScheduler().runTaskTimer(SalorMurder.getInstance(), () -> {
             update(player);
         }, 0, 20L);
         int bowCooldown = fileManager.getTime(Time.TRIDENT_RELOAD);

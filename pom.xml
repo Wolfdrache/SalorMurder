@@ -74,7 +74,7 @@
         <dependency>
             <groupId>com.github.Wolfdrache.Party</groupId>
             <artifactId>party-api</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>CommandHandler-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

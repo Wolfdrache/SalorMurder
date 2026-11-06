@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
+import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
@@ -35,9 +36,11 @@ import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 import com.wolfdrache.salormurder.timer.BowTimer;
 import com.wolfdrache.salormurder.timer.RoundTimer;
 import com.wolfdrache.salormurder.ui.RoundScoreBoard;
+import com.wolfdrache.serverapi.gamemodes.GameService;
 
 public class RoundManager {
     private final PartyService partyService;
+    private final GameService gameService;
     private final MurderKnifesAPI murderKnifes;
     
     private final MapManager mapManager;
@@ -56,8 +59,9 @@ public class RoundManager {
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(PartyService partyService, MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+    public RoundManager(PartyService partyService, GameService gameService, MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
         this.partyService = partyService;
+        this.gameService = gameService;
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
         this.statsManager = statsManager;
@@ -105,8 +109,10 @@ public class RoundManager {
             giveRoleItems(player);
             joinSignManager.updateSign(round);
             MessageHelper.playerJoinRound(player, round);
+            gameService.joinPlugin(player, SalorMurder.getInstance());
             givePlayerWaitingAttributes(player);
             player.setGameMode(GameMode.ADVENTURE);
+            return;
         } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
             player.teleport(round.map.world.getSpawnLocation());
             round.addPlayer(player);
@@ -114,8 +120,11 @@ public class RoundManager {
             giveRoleItems(player);
             givePlayerSpectatorAttributes(player);
             MessageHelper.playerSpectateRound(player, round);
+            gameService.joinPlugin(player, SalorMurder.getInstance());
             player.setGameMode(GameMode.ADVENTURE);
+            return;
         }
+        joiningPlayers.remove(player);
     }
     
     private void doPartyJoin(Player player, RoundSM round) {
@@ -134,14 +143,15 @@ public class RoundManager {
         }
     }
 
-    public boolean leavePlayer(Player player, boolean tp) {
-        if (!activePlayers.containsKey(player)) return false;
+    public void leavePlayer(Player player, boolean tp) {
+        if (!activePlayers.containsKey(player)) return;
         RoundSM round = activePlayers.get(player);
         PlayerSM playerSM = round.players.get(player);
         RoundScoreBoard.removeScoreBoard(round);
         round.players.remove(player);
         activePlayers.remove(player);
         MessageHelper.playerLeaveRound(player, round);
+        gameService.leaveGame(player, SalorMurder.getInstance());
         TabHelper.showPlayerToAll(round, player);
         if (tp) {
             player.teleport(fileManager.getLeaveLocation());
@@ -163,7 +173,6 @@ public class RoundManager {
                 checkEndRound(round);
             }
         }
-        return true;
     }
 
     public boolean enoughPlayersToStart(RoundSM round) {

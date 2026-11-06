@@ -27,31 +27,31 @@ public class ForceJoinCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be executed by a player.");
-            return false;
+            return true;
         }
 
         if (args.length < 2) {
             // MessageHelper.sendMessage(player, "§cNutzung: /forcejoinbw <@r | [Runde]> <@a | [Spieler1] [Spieler2] ...>");
-            return false;
+            return true;
         }
 
         String roundName = args[0];
         RoundSM round = roundManager.getRoundByName(roundName);
         if (round == null) {
             MessageHelper.sendMessage(player, "§cRunde '" + roundName + "' nicht gefunden!");
-            return false;
+            return true;
         }
 
         if (round.mode != RoundMode.WAITING) {
             MessageHelper.sendMessage(player, "§cRunde '" + roundName + "' ist nicht im Wartezustand!");
-            return false;
+            return true;
         }
 
         List<Player> targetPlayers = new ArrayList<>();
 
         if (Arrays.stream(args).anyMatch(a -> a.equalsIgnoreCase("@a")) && args.length > 2) {
             MessageHelper.sendMessage(player, "§cDu kannst nicht @a mit individuelen Spielern kombinieren.");
-            return false;
+            return true;
         }
         if (args[1].equalsIgnoreCase("@a")) {
             targetPlayers.addAll(player.getServer().getOnlinePlayers());
@@ -83,9 +83,7 @@ public class ForceJoinCommand implements TabExecutor {
                 .toList());
 
             return roundNames.stream().filter(round -> round.toLowerCase().startsWith(partialRoundName)).toList();
-        }
-
-        if (args.length >= 2) {
+        } else if (args.length >= 2) {
             Set<String> selectedPlayers = Arrays.stream(args, 1, args.length - 1)
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());

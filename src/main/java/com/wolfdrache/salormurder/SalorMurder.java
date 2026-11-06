@@ -13,12 +13,17 @@ import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.*;
 import com.wolfdrache.salormurder.ui.*;
+import com.wolfdrache.serverapi.gamemodes.GameCommandTypes;
+import com.wolfdrache.serverapi.gamemodes.GameService;
+import com.wolfdrache.serverapi.reports.ReportService;
 
 public class SalorMurder extends JavaPlugin {
-
+    private static SalorMurder instance;
     private Economy economy;
     private MurderKnifesAPI murderKnifes;
     private PartyService partyService;
+    private ReportService reportService;
+    private GameService gameService;
 
     private FileManager fileManager;
     private MapManager mapManager;
@@ -37,32 +42,53 @@ public class SalorMurder extends JavaPlugin {
 
     @Override
     public void onEnable(){
-        if (!setupEconomy()) {
-            getLogger().severe("Vault not found! Disabling plugin.");
+        instance = this;
+        economy = setupService(Economy.class);
+        if (economy == null) {
+            getLogger().severe("Vault economy service not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (!setupMurderKnifes()) {
+
+        partyService = setupService(PartyService.class);
+        if (partyService == null) {
+            getLogger().severe("Party API service not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        reportService = setupService(ReportService.class);
+        if (reportService == null) {
+            getLogger().severe("ReportService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        gameService = setupService(GameService.class);
+        if (gameService == null) {
+            getLogger().severe("GameService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        murderKnifes = setupService(MurderKnifesAPI.class);
+        if (murderKnifes == null) {
             getLogger().severe("MurderKnifes API not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        if (!setupPartyService()) {
-            getLogger().severe("PartyService not found! Disabling plugin.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+
         fileManager = new FileManager(this);
         leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
         statsManager = new StatsManager(fileManager, leaderBoardFileManager);
         coinManager = new CoinManager(economy, fileManager, statsManager);
         mapManager = new MapManager(fileManager);
-        roundManager = new RoundManager(partyService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
+        roundManager = new RoundManager(partyService, gameService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
-        roundTimer = new RoundTimer(this, roundManager, fileManager);
-        bowTimer = new BowTimer(this, fileManager);
+        roundTimer = new RoundTimer(roundManager, fileManager);
+        bowTimer = new BowTimer(fileManager);
         roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
 
         teleporterGui = new TeleporterGui(roundManager);
@@ -77,12 +103,24 @@ public class SalorMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager, fileManager), this);
         getServer().getPluginManager().registerEvents(new LeaderBoardListener(), this);
 
-        getCommand("joinsm").setExecutor(new JoinCommand(roundManager));
-        getCommand("leavesm").setExecutor(new LeaveCommand(roundManager));
-        getCommand("startsm").setExecutor(new StartCommand(roundManager));
-        getCommand("statssm").setExecutor(new StatsCommand(statsManager));
-        getCommand("forcejoinsm").setExecutor(new ForceJoinCommand(roundManager));
-        getCommand("smadmin").setExecutor(new AdminCommand(roundManager));
+        String reportCategory = "SailorsMurder";
+        gameService.registerCommand(this, GameCommandTypes.JOIN, new JoinCommand(roundManager));
+        gameService.registerCommand(this, GameCommandTypes.LEAVE, new LeaveCommand(roundManager));
+        gameService.registerCommand(this, GameCommandTypes.START, new StartCommand(roundManager));
+        gameService.registerCommand(this, GameCommandTypes.FORCEJOIN, new ForceJoinCommand(roundManager));
+        gameService.registerCommand(this, GameCommandTypes.ADMIN, new AdminCommand(roundManager));
+        gameService.registerCommand(this, GameCommandTypes.STATS, new StatsCommand(statsManager));
+        gameService.registerPluginAlias(this, reportCategory);
+
+        gameService.registerStatsDisplayItem(player -> statsManager.getPlayerStatsItem(player));
+
+        reportService.createCategory(reportCategory);
+        reportService.addReason(reportCategory, "teaming");
+        reportService.addReason(reportCategory, "hacking");
+        reportService.addReason(reportCategory, "stats_boosting");
+        reportService.addReason(reportCategory, "outofmap");
+        reportService.addReason(reportCategory, "random_killing");
+        reportService.addReason(reportCategory, "trolling");
 
         getLogger().info("SalorMurder has been enabled!");
     }
@@ -96,39 +134,18 @@ public class SalorMurder extends JavaPlugin {
         getLogger().info("SalorMurder has been disabled!");
     }
 
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
+    private <T> T setupService(Class<T> serviceClass) {
+        RegisteredServiceProvider<T> rsp =
+                getServer().getServicesManager().getRegistration(serviceClass);
 
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            return false;
+            return null;
         }
 
-        economy = rsp.getProvider();
-        return true;
+        return rsp.getProvider();
     }
 
-    private boolean setupMurderKnifes() {
-        RegisteredServiceProvider<MurderKnifesAPI> provider = getServer().getServicesManager().getRegistration(MurderKnifesAPI.class);
-
-        if (provider == null) {
-            getLogger().severe("MurderKnifes API not found!");
-            return false;
-        }
-
-        murderKnifes = provider.getProvider();
-        return true;
-    }
-
-    private boolean setupPartyService() {
-        RegisteredServiceProvider<PartyService> rsp = getServer().getServicesManager().getRegistration(PartyService.class);
-        if (rsp == null) {
-            return false;
-        }
-
-        partyService = rsp.getProvider();
-        return true;
+    public static SalorMurder getInstance() {
+        return instance;
     }
 }

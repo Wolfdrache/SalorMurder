@@ -1,15 +1,23 @@
 package com.wolfdrache.salormurder.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.leaderboard.LeaderBoardFileManager;
 import com.wolfdrache.salormurder.leaderboard.LeaderBoardManager;
 import com.wolfdrache.salormurder.models.PlayerStats;
+
+import net.kyori.adventure.text.Component;
 
 public class StatsManager {
     private final FileManager fileManager;
@@ -52,26 +60,50 @@ public class StatsManager {
         }
     }
 
+    private List<String>getStatsOutput(OfflinePlayer player) {
+        PlayerStats stats = getPlayerStats(player);
+        List<String> output = new ArrayList<>();
+        output.add("§7Kills als Murder: §a" + (stats.killedDetectives + stats.killedInnocents));
+        output.add("§7Murderer getötet: §a" + stats.murderersKilled);
+        output.add("§7Random Kills: §4" + stats.randomKills);
+        output.add("§7Siege als Murder: §a" + stats.roundsWonMurderer);
+        output.add("§7Siege als Innocent: §a" + stats.roundsWonInnocent);
+        output.add("§7Niederlagen als Murder: §c" + stats.roundsLostMurderer);
+        output.add("§7Niederlagen als Innocent: §c" + stats.roundsLostInnocent);
+        output.add("§7Runden gespielt: §7" + stats.getRoundsPlayed());
+        output.add("§7Siegerquote: §7" + stats.getWinRate());
+        output.add("§7Gemachte Coins: §6" + stats.coins);
+        output.add("§7Punkte: §6" + stats.getPoints());
+        output.add("§7Leaderboard Position: §6" + leaderBoardManager.getRank(player));
+        return output;
+    }
+
     public void showPlayerStats(Player sender, OfflinePlayer targetPlayer) {
-        PlayerStats stats = getPlayerStats(targetPlayer);
         String targetName = targetPlayer.getName() != null ? targetPlayer.getName() : "Unbekannt";
 
         sender.sendMessage("§8§m------------------------------");
         sender.sendMessage("§3§lSailors§c§lMurder §7| §fStats von §e" + targetName);
         sender.sendMessage("§8§m------------------------------");
-        sender.sendMessage("§7Kills als Murder: §f" + (stats.killedDetectives + stats.killedInnocents));
-        sender.sendMessage("§7Murderer getötet: §f" + stats.murderersKilled);
-        sender.sendMessage("§7Random Kills: §f" + stats.randomKills);
-        sender.sendMessage("§7Siege als Murder: §f" + stats.roundsWonMurderer);
-        sender.sendMessage("§7Siege als Innocent: §f" + stats.roundsWonInnocent);
-        sender.sendMessage("§7Niederlagen als Murder: §f" + stats.roundsLostMurderer);
-        sender.sendMessage("§7Niederlagen als Innocent: §f" + stats.roundsLostInnocent);
-        sender.sendMessage("§7Runden gespielt: §f" + stats.getRoundsPlayed());
-        sender.sendMessage("§7Siegerquote: §f" + stats.getWinRate());
-        sender.sendMessage("§7Gemachte Coins: §f" + stats.coins);
-        sender.sendMessage("§7Punkte: §f" + stats.getPoints());
-        sender.sendMessage("§7Leaderboard Position: §f" + leaderBoardManager.getRank(targetPlayer));
+        for (String line : getStatsOutput(targetPlayer)) {
+            sender.sendMessage(line);
+        }
         sender.sendMessage("§8§m------------------------------");
+    }
+
+    public ItemStack getPlayerStatsItem(OfflinePlayer player) {
+        int rank = leaderBoardManager.getRank(player);
+        ItemStack item = new ItemStack(Material.TRIDENT, rank);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.displayName(MessageHelper.createComponent("§3§lSailors§c§lMurder"));
+            List<Component> lore = new ArrayList<>();
+            for (String line : getStatsOutput(player)) {
+                lore.add(MessageHelper.createComponent(line));
+            }
+            meta.lore(lore);
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 
     public void saveAllPlayerStats(boolean removeAfterSave) {

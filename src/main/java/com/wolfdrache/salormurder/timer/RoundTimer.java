@@ -19,14 +19,12 @@ import com.wolfdrache.salormurder.ui.RoundScoreBoard;
 import com.wolfdrache.salormurder.ui.XpBarTimer;
 
 public class RoundTimer {
-    private final SalorMurder plugin;
     private final RoundManager roundManager;
     private final FileManager fileManager;
 
     private final Map<RoundSM, BukkitTask> roundTasks = new HashMap<>(); 
 
-    public RoundTimer(SalorMurder plugin, RoundManager roundManager, FileManager fileManager) {
-        this.plugin = plugin;
+    public RoundTimer(RoundManager roundManager, FileManager fileManager) {
         this.roundManager = roundManager;
         this.fileManager = fileManager;
     }
@@ -36,7 +34,7 @@ public class RoundTimer {
         if (task != null && !task.isCancelled()) {
             return;
         }
-        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(round), 0L, 20L);
+        task = Bukkit.getScheduler().runTaskTimer(SalorMurder.getInstance(), () -> update(round), 0L, 20L);
         roundTasks.put(round, task);
     }
 
