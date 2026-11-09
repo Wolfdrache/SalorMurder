@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.salormurder.helper.ItemHelper;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.manager.RoundManager;
@@ -53,7 +54,7 @@ public class TeleporterGui implements Listener {
             return;
         }
         int size = ((alivePlayers.size() - 1) / 9 + 1) * 9;
-        Inventory gui = Bukkit.createInventory(null, size, MessageHelper.createComponent("§6Teleporter"));
+        Inventory gui = Bukkit.createInventory(null, size, Helper.createComponent("§6Teleporter"));
         for (Player target : alivePlayers) {
             PlayerSM targetSM = round.players.get(target);
             if (targetSM != null && targetSM.mode == PlayerMode.PLAYING) {

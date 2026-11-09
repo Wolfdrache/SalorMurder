@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.SalorMurder;
@@ -241,7 +242,7 @@ public class RoundManager {
 
         if (winningRole != null) {
             String message;
-            String murderReveal = "§cDer Mörder war: " + (round.murderer != null ? round.murderer.getName() : "Unbekannt");
+            String murderReveal = "§cDer Mörder war: " + (round.murderer != null ? Helper.getPlayerRankName(round.murderer) : "Unbekannt");
             if (winningRole == Role.MURDERER) {
                 message = "§cDer Mörder hat gewonnen!";
             } else {

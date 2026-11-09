@@ -11,7 +11,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.models.PlayerSM;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
@@ -67,14 +67,14 @@ public class RoundScoreBoard {
             data = boards.get(player);
         }
 
-        data.map.suffix(MessageHelper.createComponent("§f" + round.map.name));
-        data.time.suffix(MessageHelper.createComponent("§f" + TabHelper.formatTime(round.time)));
+        data.map.suffix(Helper.createComponent("§f" + round.map.name));
+        data.time.suffix(Helper.createComponent("§f" + TabHelper.formatTime(round.time)));
         PlayerSM playerSM = round.players.get(player);
         if (playerSM != null) {
-            data.playerStatus.suffix(MessageHelper.createComponent("§f" + getPlayerStatus(playerSM)));
+            data.playerStatus.suffix(Helper.createComponent("§f" + getPlayerStatus(playerSM)));
         }
-        data.playerAlive.suffix(MessageHelper.createComponent("§f" + getAlivePlayersCount(round)));
-        data.detectiveAlive.suffix(MessageHelper.createComponent(getDetectiveAlive(round)));
+        data.playerAlive.suffix(Helper.createComponent("§f" + getAlivePlayersCount(round)));
+        data.detectiveAlive.suffix(Helper.createComponent(getDetectiveAlive(round)));
     }
 
     private static String getDetectiveAlive(RoundSM round) {
@@ -112,7 +112,7 @@ public class RoundScoreBoard {
 
         Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        Objective objective = board.registerNewObjective("sm", Criteria.DUMMY, MessageHelper.createComponent("§3§lSailors§c§lMurder"));
+        Objective objective = board.registerNewObjective("sm", Criteria.DUMMY, Helper.createComponent("§3§lSailors§c§lMurder"));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         int score = 15;
@@ -132,8 +132,8 @@ public class RoundScoreBoard {
                 String teamName, String entry, String prefix, int score) {
 
         Team team = board.registerNewTeam(teamName);
-        team.prefix(MessageHelper.createComponent(prefix));
-        team.suffix(MessageHelper.createComponent(""));
+        team.prefix(Helper.createComponent(prefix));
+        team.suffix(Helper.createComponent(""));
         team.addEntry(entry);
 
         objective.getScore(entry).setScore(score);

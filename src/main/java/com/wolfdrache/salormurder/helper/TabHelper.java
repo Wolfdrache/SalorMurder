@@ -2,6 +2,7 @@ package com.wolfdrache.salormurder.helper;
 
 import org.bukkit.entity.Player;
 
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 import com.wolfdrache.salormurder.models.RoundSM;
@@ -15,8 +16,8 @@ public class TabHelper {
                 "\n§7Gebaut von: " + round.map.builder;
         for (Player player : round.players.keySet()) {
             var playerSM = round.players.get(player);
-            player.sendPlayerListHeader(MessageHelper.createComponent(header));
-            player.sendPlayerListFooter(MessageHelper.createComponent(footer));
+            player.sendPlayerListHeader(Helper.createComponent(header));
+            player.sendPlayerListFooter(Helper.createComponent(footer));
             for (Player otherPlayer : round.players.keySet()) {
                 if (otherPlayer.equals(player)) {
                     continue;

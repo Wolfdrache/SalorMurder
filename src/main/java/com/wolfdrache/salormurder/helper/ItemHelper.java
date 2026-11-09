@@ -6,13 +6,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.wolfdrache.helper.Helper;
+
 public class ItemHelper {
 
     public static ItemStack createNavItem(Material material, String displayName) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(MessageHelper.createComponent(displayName));
+            meta.displayName(Helper.createComponent(displayName));
             item.setItemMeta(meta);
         }
         return item;
@@ -32,7 +34,7 @@ public class ItemHelper {
         ItemStack bow = new ItemStack(Material.BOW);
         ItemMeta meta = bow.getItemMeta();
         if (meta != null) {
-            meta.displayName(MessageHelper.createComponent("§3Waffe"));
+            meta.displayName(Helper.createComponent("§3Waffe"));
             meta.setUnbreakable(true);
             bow.setItemMeta(meta);
         }

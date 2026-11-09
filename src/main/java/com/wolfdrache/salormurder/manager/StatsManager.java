@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.leaderboard.LeaderBoardManager;
 import com.wolfdrache.salormurder.SalorMurder;
-import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.models.PlayerStats;
 
 import net.kyori.adventure.text.Component;
@@ -79,10 +79,8 @@ public class StatsManager {
     }
 
     public void showPlayerStats(Player sender, OfflinePlayer targetPlayer) {
-        String targetName = targetPlayer.getName() != null ? targetPlayer.getName() : "Unbekannt";
-
         sender.sendMessage("§8§m------------------------------");
-        sender.sendMessage("§3§lSailors§c§lMurder §7| §fStats von §e" + targetName);
+        sender.sendMessage("§3§lSailors§c§lMurder §7| §fStats von §e" + Helper.getPlayerRankName(targetPlayer));
         sender.sendMessage("§8§m------------------------------");
         for (String line : getStatsOutput(targetPlayer)) {
             sender.sendMessage(line);
@@ -95,10 +93,10 @@ public class StatsManager {
         ItemStack item = new ItemStack(Material.TRIDENT, rank);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(MessageHelper.createComponent("§3§lSailors§c§lMurder"));
+            meta.displayName(Helper.createComponent("§3§lSailors§c§lMurder"));
             List<Component> lore = new ArrayList<>();
             for (String line : getStatsOutput(player)) {
-                lore.add(MessageHelper.createComponent(line));
+                lore.add(Helper.createComponent(line));
             }
             meta.lore(lore);
             item.setItemMeta(meta);

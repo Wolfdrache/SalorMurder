@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import com.wolfdrache.salormurder.helper.MessageHelper;
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.salormurder.models.RoundSM;
 import com.wolfdrache.salormurder.models.RoundSM.RoundMode;
 
@@ -114,10 +114,10 @@ public class JoinSignManager {
 
     private void setEmptySign(Location location) {
         if(!(location.getBlock().getState() instanceof Sign sign)) return;
-        sign.line(0, MessageHelper.createComponent("§3Sailors§cMurder"));
-        sign.line(1, MessageHelper.createComponent("§7Keine Runde"));
-        sign.line(2, MessageHelper.createComponent("§7verfügbar"));
-        sign.line(3, MessageHelper.createComponent("§e-----------"));
+        sign.line(0, Helper.createComponent("§3Sailors§cMurder"));
+        sign.line(1, Helper.createComponent("§7Keine Runde"));
+        sign.line(2, Helper.createComponent("§7verfügbar"));
+        sign.line(3, Helper.createComponent("§e-----------"));
         sign.update();
     }
 
@@ -125,10 +125,10 @@ public class JoinSignManager {
         Location location = getSignForRound(round);
         if (location == null) return;
         if(!(location.getBlock().getState() instanceof Sign sign)) return;
-        sign.line(0, MessageHelper.createComponent("§3Sailors§cMurder"));
-        sign.line(1, MessageHelper.createComponent("§7Click to join"));
-        sign.line(2, MessageHelper.createComponent("§e" + round.map.name));
-        sign.line(3, MessageHelper.createComponent("§a" + round.players.size() + "/" + round.map.getMaxPlayers() + " Spieler"));
+        sign.line(0, Helper.createComponent("§3Sailors§cMurder"));
+        sign.line(1, Helper.createComponent("§7Click to join"));
+        sign.line(2, Helper.createComponent("§e" + round.map.name));
+        sign.line(3, Helper.createComponent("§a" + round.players.size() + "/" + round.map.getMaxPlayers() + " Spieler"));
         sign.update();
     }
 }

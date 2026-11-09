@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.wolfdrache.helper.Helper;
 import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
@@ -56,7 +57,7 @@ public class RoundTimer {
             int lobbyTime = fileManager.getTime(Time.LOBBY);
             XpBarTimer.updateXpBar(round, lobbyTime);
             for (Player player : round.players.keySet()) {
-                player.sendActionBar(MessageHelper.createComponent("§c" + round.map.name));
+                player.sendActionBar(Helper.createComponent("§c" + round.map.name));
             }
             if (!roundManager.enoughPlayersToStart(round)) {
                 round.time = lobbyTime;
