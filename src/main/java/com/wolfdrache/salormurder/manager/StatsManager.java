@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.wolfdrache.leaderboard.LeaderBoardManager;
+import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.helper.MessageHelper;
-import com.wolfdrache.salormurder.leaderboard.LeaderBoardFileManager;
-import com.wolfdrache.salormurder.leaderboard.LeaderBoardManager;
 import com.wolfdrache.salormurder.models.PlayerStats;
 
 import net.kyori.adventure.text.Component;
@@ -25,9 +25,9 @@ public class StatsManager {
 
     private final Map<Player, PlayerStats> playerStatsMap = new HashMap<>();
 
-    public StatsManager(FileManager fileManager, LeaderBoardFileManager leaderBoardFileManager) {
+    public StatsManager(FileManager fileManager) {
         this.fileManager = fileManager;
-        this.leaderBoardManager = new LeaderBoardManager(leaderBoardFileManager, this::getPlayerStats);
+        this.leaderBoardManager = new LeaderBoardManager(SalorMurder.getInstance(), this::getPlayerStats);
     }
 
     public void loadPlayerStats(Player player) {

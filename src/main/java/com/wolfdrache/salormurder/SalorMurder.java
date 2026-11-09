@@ -7,12 +7,10 @@ import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.commands.*;
-import com.wolfdrache.salormurder.leaderboard.*;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.*;
 import com.wolfdrache.salormurder.ui.*;
-import com.wolfdrache.serverapi.gamemodes.GameCommandTypes;
 import com.wolfdrache.serverapi.gamemodes.GameService;
 import com.wolfdrache.serverapi.reports.ReportService;
 
@@ -36,8 +34,6 @@ public class SalorMurder extends JavaPlugin {
     private BowTimer bowTimer;
 
     private TeleporterGui teleporterGui;
-
-    private LeaderBoardFileManager leaderBoardFileManager;
 
     @Override
     public void onEnable(){
@@ -78,9 +74,8 @@ public class SalorMurder extends JavaPlugin {
         }
 
         fileManager = new FileManager(this);
-        leaderBoardFileManager = new LeaderBoardFileManager(this);
         chatManager = new ChatManager();
-        statsManager = new StatsManager(fileManager, leaderBoardFileManager);
+        statsManager = new StatsManager(fileManager);
         coinManager = new CoinManager(economy, fileManager, statsManager);
         mapManager = new MapManager(fileManager);
         roundManager = new RoundManager(partyService, gameService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
@@ -98,15 +93,14 @@ public class SalorMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JoinSignListener(joinSignManager), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(roundManager, statsManager, chatManager, bowTimer), this);
         getServer().getPluginManager().registerEvents(new WorldChangeListener(roundManager, fileManager), this);
-        getServer().getPluginManager().registerEvents(new LeaderBoardListener(), this);
 
         String reportCategory = "SailorsMurder";
-        gameService.registerCommand(this, GameCommandTypes.JOIN, new JoinCommand(roundManager));
-        gameService.registerCommand(this, GameCommandTypes.LEAVE, new LeaveCommand(roundManager));
-        gameService.registerCommand(this, GameCommandTypes.START, new StartCommand(roundManager));
-        gameService.registerCommand(this, GameCommandTypes.FORCEJOIN, new ForceJoinCommand(roundManager));
-        gameService.registerCommand(this, GameCommandTypes.ADMIN, new AdminCommand(roundManager));
-        gameService.registerCommand(this, GameCommandTypes.STATS, new StatsCommand(statsManager));
+        gameService.registerCommand(this, GameService.CommandType.JOIN, new JoinCommand(roundManager));
+        gameService.registerCommand(this, GameService.CommandType.LEAVE, new LeaveCommand(roundManager));
+        gameService.registerCommand(this, GameService.CommandType.START, new StartCommand(roundManager));
+        gameService.registerCommand(this, GameService.CommandType.FORCEJOIN, new ForceJoinCommand(roundManager));
+        gameService.registerCommand(this, GameService.CommandType.ADMIN, new AdminCommand(roundManager));
+        gameService.registerCommand(this, GameService.CommandType.STATS, new StatsCommand(statsManager));
         gameService.registerPluginAlias(this, reportCategory);
 
         gameService.registerStatsDisplayItem(player -> statsManager.getPlayerStatsItem(player));

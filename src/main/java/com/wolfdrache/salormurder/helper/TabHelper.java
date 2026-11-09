@@ -10,7 +10,7 @@ public class TabHelper {
 
     public static void updateTabList(RoundSM round) {
         String header = "§3§lSailors§c§lMurder\n";
-        String footer = "§7Map: §e" + round.map.name +
+        String footer = "\n§7Map: §e" + round.map.name +
                 "\n§7Zeit: §e" + formatTime(round.time) +
                 "\n§7Gebaut von: " + round.map.builder;
         for (Player player : round.players.keySet()) {

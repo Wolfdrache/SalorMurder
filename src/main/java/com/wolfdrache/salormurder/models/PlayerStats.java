@@ -1,8 +1,9 @@
 package com.wolfdrache.salormurder.models;
 
+import com.wolfdrache.leaderboard.IPlayerStats;
 import com.wolfdrache.salormurder.models.PlayerSM.Role;
 
-public class PlayerStats {
+public class PlayerStats implements IPlayerStats {
     public int killedDetectives;
     public int killedInnocents;
     public int murderersKilled;
@@ -25,6 +26,7 @@ public class PlayerStats {
         this.coins = coins;
     }
 
+    @Override
     public int getPoints() {
         return killedDetectives * 10 + killedInnocents * 5 + murderersKilled * 15 + roundsWonMurderer * 25 + roundsWonInnocent * 15 - roundsLostMurderer * 5 - roundsLostInnocent * 10 - randomKills * 5;
     }
