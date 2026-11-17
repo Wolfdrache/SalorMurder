@@ -60,4 +60,9 @@ public class PlayerStats implements IPlayerStats {
             roundsLostInnocent++;
         }
     }
+
+    @Override
+    public String getPointsStatistics() {
+        return String.format("%.2f", (double) getPoints() / getRoundsPlayed());
+    }
 }
