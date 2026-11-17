@@ -120,7 +120,7 @@ public class PlayerListener implements Listener {
             event.getItem().remove();
             return;
         }
-        roundManager.checkPlayerGetTrident(player, round);
+        roundManager.checkPlayerGetTrident(player, round, false);
     }
 
     @EventHandler 

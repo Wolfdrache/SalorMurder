@@ -6,11 +6,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
+import com.wolfdrache.salormurder.achievements.AchievementHelper;
 import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
 import com.wolfdrache.salormurder.timer.*;
 import com.wolfdrache.salormurder.ui.*;
+import com.wolfdrache.serverapi.achievements.AchievementService;
 import com.wolfdrache.serverapi.gamemodes.GameService;
 import com.wolfdrache.serverapi.reports.ReportService;
 
@@ -21,6 +23,7 @@ public class SalorMurder extends JavaPlugin {
     private PartyService partyService;
     private ReportService reportService;
     private GameService gameService;
+    private AchievementService achievementService;
 
     private FileManager fileManager;
     private MapManager mapManager;
@@ -44,24 +47,27 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
         partyService = setupService(PartyService.class);
         if (partyService == null) {
             getLogger().severe("Party API service not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
         reportService = setupService(ReportService.class);
         if (reportService == null) {
             getLogger().severe("ReportService not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
         gameService = setupService(GameService.class);
         if (gameService == null) {
             getLogger().severe("GameService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        achievementService = setupService(AchievementService.class);
+        if (achievementService == null) {
+            getLogger().severe("AchievementService not found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -86,6 +92,9 @@ public class SalorMurder extends JavaPlugin {
         roundManager.setExtras(joinSignManager, roundTimer, bowTimer);
 
         teleporterGui = new TeleporterGui(roundManager);
+
+        AchievementHelper.setStatsManager(statsManager);
+        AchievementHelper.setService(achievementService);
 
         getServer().getPluginManager().registerEvents(teleporterGui, this);
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnifes, roundManager, teleporterGui), this);

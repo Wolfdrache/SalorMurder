@@ -118,7 +118,7 @@ public class DamageListener implements Listener {
                 damager.getInventory().remove(NavItems.arrowItem);
                 damager.getInventory().remove(NavItems.arrowCooldownItem);
 
-                if (!roundManager.checkPlayerGetTrident(damager, round)) {
+                if (!roundManager.checkPlayerGetTrident(damager, round, true)) {
                     bowTimer.stopBowTimer(damager);
                 }
                 if (playerSM.role == Role.DETECTIVE) {

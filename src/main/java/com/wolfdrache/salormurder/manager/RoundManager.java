@@ -22,6 +22,7 @@ import com.wolfdrache.helper.Helper;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.SalorMurder;
+import com.wolfdrache.salormurder.achievements.AchievementHelper;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
@@ -421,10 +422,10 @@ public class RoundManager {
 
     public void playerLootChest(RoundSM round, Player player, Location location) {
         round.playerLootChest(player, location);
-        checkPlayerGetTrident(player, round);
+        checkPlayerGetTrident(player, round, false);
     }
 
-    public boolean checkPlayerGetTrident(Player player, RoundSM round) {
+    public boolean checkPlayerGetTrident(Player player, RoundSM round, boolean afterRandomKill) {
         if (player.getInventory().contains(Material.BOW)) return true;
         ItemStack tridentCost = fileManager.getTridentCost();
 
@@ -437,6 +438,9 @@ public class RoundManager {
             player.getInventory().removeItem(tridentCost);
             player.getInventory().setItem(0, NavItems.bowItem);
             player.getInventory().setItem(8, NavItems.arrowItem);
+            if (afterRandomKill) {
+                AchievementHelper.updateAchievementProgress(player, 1, AchievementHelper.AchievementType.BOW_AFTER_RANDOMKILL);
+            }
             return true;
         } else {
             int missingAmount = tridentCost.getAmount() - player.getInventory().all(tridentCost.getType()).values().stream().mapToInt(ItemStack::getAmount).sum();
