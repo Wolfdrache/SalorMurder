@@ -63,6 +63,9 @@ public class PlayerStats implements IPlayerStats {
 
     @Override
     public String getPointsStatistics() {
+        if (getRoundsPlayed() == 0) {
+            return "0.00";
+        }
         return String.format("%.2f", (double) getPoints() / getRoundsPlayed());
     }
 }
