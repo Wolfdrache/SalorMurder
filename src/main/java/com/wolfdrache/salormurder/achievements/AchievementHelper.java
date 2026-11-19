@@ -79,12 +79,12 @@ public class AchievementHelper {
     private static final Achievement playedRounds100 = new Achievement(20, "§4100 Gespielte Runden", "Spiele 100 Runden", Material.EMERALD, Map.of(AchievementType.ROUNDS_PLAYED, () -> 100), 100);
     private static final Achievement playedRounds200 = new Achievement(21, "§4200 Gespielte Runden", "Spiele 200 Runden", Material.IRON_SWORD, Map.of(AchievementType.ROUNDS_PLAYED, () -> 200), 100);
     private static final Achievement playedRounds500 = new Achievement(22, "§4500 Gespielte Runden", "Spiele 500 Runden", Material.BOW, Map.of(AchievementType.ROUNDS_PLAYED, () -> 500), 100);
-    private static final Achievement playedRounds1000 = new Achievement(23, "§41000 Gespielte Runden", "Spiele 1000 Runden", Material.TRIDENT, Map.of(AchievementType.ROUNDS_PLAYED, () -> 1000), 100);
+    private static final Achievement playedRounds1000 = new Achievement(23, "§41.000 Gespielte Runden", "Spiele 1.000 Runden", Material.TRIDENT, Map.of(AchievementType.ROUNDS_PLAYED, () -> 1000), 100);
 
-    private static final Achievement foundClues500 = new Achievement(24, "§a500 Emeralds gefunden", "Sammle 500 Emeralds", Material.EMERALD_ORE, Map.of(AchievementType.CLUES, () -> 500), 100);
-    private static final Achievement foundClues1000 = new Achievement(25, "§a1000 Emeralds gefunden", "Sammle 1000 Emeralds", Material.DEEPSLATE_EMERALD_ORE, Map.of(AchievementType.CLUES, () -> 1000), 100);
-    private static final Achievement foundClues2000 = new Achievement(26, "§a2000 Emeralds gefunden", "Sammle 2000 Emeralds", Material.EMERALD, Map.of(AchievementType.CLUES, () -> 2000), 100);
-    private static final Achievement foundClues5000 = new Achievement(27, "§a5000 Emeralds gefunden", "Sammle 5000 Emeralds", Material.EMERALD_BLOCK, Map.of(AchievementType.CLUES, () -> 5000), 100);
+    private static final Achievement foundClues1000 = new Achievement(24, "§a1.000 Emeralds gefunden", "Sammle 1.000 Emeralds", Material.EMERALD_ORE, Map.of(AchievementType.CLUES, () -> 1000), 100);
+    private static final Achievement foundClues2500 = new Achievement(25, "§a2.500 Emeralds gefunden", "Sammle 2.500 Emeralds", Material.DEEPSLATE_EMERALD_ORE, Map.of(AchievementType.CLUES, () -> 2500), 100);
+    private static final Achievement foundClues5000 = new Achievement(26, "§a5.000 Emeralds gefunden", "Sammle 5.000 Emeralds", Material.EMERALD, Map.of(AchievementType.CLUES, () -> 5000), 100);
+    private static final Achievement foundClues10000 = new Achievement(27, "§a10.000 Emeralds gefunden", "Sammle 10.000 Emeralds", Material.EMERALD_BLOCK, Map.of(AchievementType.CLUES, () -> 10000), 100);
 
     public static void setStatics(AchievementService achievementService, StatsManager statsManager) {
         AchievementHelper.achievementService = achievementService;
@@ -114,11 +114,11 @@ public class AchievementHelper {
         achievementService.registerAchievement(playedRounds200, achievementCategory);
         achievementService.registerAchievement(playedRounds500, achievementCategory);
         achievementService.registerAchievement(playedRounds1000, achievementCategory);
-        
-        achievementService.registerAchievement(foundClues500, achievementCategory);
+
         achievementService.registerAchievement(foundClues1000, achievementCategory);
-        achievementService.registerAchievement(foundClues2000, achievementCategory);
+        achievementService.registerAchievement(foundClues2500, achievementCategory);
         achievementService.registerAchievement(foundClues5000, achievementCategory);
+        achievementService.registerAchievement(foundClues10000, achievementCategory);
     }
 
     public static void updateAchievementProgress(Player player, int progress, AchievementType type) {
