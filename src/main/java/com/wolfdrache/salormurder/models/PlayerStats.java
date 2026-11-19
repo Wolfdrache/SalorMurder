@@ -35,6 +35,14 @@ public class PlayerStats implements IPlayerStats {
         return roundsWonMurderer + roundsWonInnocent + roundsLostMurderer + roundsLostInnocent;
     }
 
+    public int getRoundsWon() {
+        return roundsWonMurderer + roundsWonInnocent;
+    }
+
+    public int getKillsAsMurderer() {
+        return killedInnocents + killedDetectives;
+    }
+
     public String getWinRate() {
         double winRate;
         if (getRoundsPlayed() == 0) {

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.wolfdrache.helper.Helper;
 import com.wolfdrache.leaderboard.LeaderBoardManager;
 import com.wolfdrache.salormurder.SalorMurder;
+import com.wolfdrache.salormurder.achievements.AchievementHelper;
 import com.wolfdrache.salormurder.models.PlayerStats;
 
 import net.kyori.adventure.text.Component;
@@ -48,6 +49,7 @@ public class StatsManager {
             if (removeAfterSave) {
                 playerStatsMap.remove(player);
             }
+            AchievementHelper.updateAchievementProgress(player, 0, AchievementHelper.AchievementType.POINTS);
         }
     }
 
@@ -111,6 +113,18 @@ public class StatsManager {
     }
 
     public void despawnArmorstands() {
-        leaderBoardManager.removeOldArmorstands();
+        leaderBoardManager.removeOldArmorstands(SalorMurder.getInstance());
+    }
+
+    public int getLowestRankLB() {
+        return leaderBoardManager.getLowestLeaderboardRank();
+    }
+
+    public int getPointsForRank(int rank) {
+        return leaderBoardManager.getPointsOfRank(rank);
+    }
+
+    public int getLowestPointsForLeaderboard() {
+        return leaderBoardManager.getPointsOfRank(getLowestRankLB());
     }
 }

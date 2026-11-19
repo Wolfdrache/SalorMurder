@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.achievements.AchievementHelper;
+import com.wolfdrache.salormurder.achievements.AchievementTracker;
 import com.wolfdrache.salormurder.commands.*;
 import com.wolfdrache.salormurder.listener.*;
 import com.wolfdrache.salormurder.manager.*;
@@ -93,8 +94,8 @@ public class SalorMurder extends JavaPlugin {
 
         teleporterGui = new TeleporterGui(roundManager);
 
-        AchievementHelper.setStatsManager(statsManager);
-        AchievementHelper.setService(achievementService);
+        AchievementHelper.setStatics(achievementService, statsManager);
+        AchievementTracker.setRequiredRandomKills(3);
 
         getServer().getPluginManager().registerEvents(teleporterGui, this);
         getServer().getPluginManager().registerEvents(new InteractionListener(murderKnifes, roundManager, teleporterGui), this);

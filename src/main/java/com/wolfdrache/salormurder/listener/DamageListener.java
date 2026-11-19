@@ -14,6 +14,8 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
+import com.wolfdrache.salormurder.achievements.AchievementHelper;
+import com.wolfdrache.salormurder.achievements.AchievementTracker;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.manager.CoinManager;
@@ -81,6 +83,7 @@ public class DamageListener implements Listener {
                     MessageHelper.detectiveKilled(round);
                 }
                 roundManager.killPlayer(player, round);
+                AchievementHelper.updateAchievementProgress(damager, 1, AchievementHelper.AchievementType.KIILS_AS_MURDER);
             }
         }
     }
@@ -106,10 +109,12 @@ public class DamageListener implements Listener {
                 coinManager.giveCoins(damager, Coins.MURDER_KILL_DETECTIVE);
                 MessageHelper.detectiveKilled(round);
             }
+            AchievementHelper.updateAchievementProgress(damager, 1, AchievementHelper.AchievementType.KIILS_AS_MURDER);
         } else {
             if (playerSM.role == Role.MURDERER) {
                 killerStats.murderersKilled++;
                 coinManager.giveCoins(damager, Coins.KILL_MURDER);
+                AchievementHelper.updateAchievementProgress(damager, 1, AchievementHelper.AchievementType.MURDERERS_KILLED);
             } else {
                 killerStats.randomKills++;
                 coinManager.giveCoins(damager, Coins.RANDOM_KILL);
@@ -117,12 +122,17 @@ public class DamageListener implements Listener {
                 damager.getInventory().remove(NavItems.bowItem);
                 damager.getInventory().remove(NavItems.arrowItem);
                 damager.getInventory().remove(NavItems.arrowCooldownItem);
-
+                AchievementTracker tracker = AchievementHelper.getPlayerAchievementTracker(damager);
+                if (tracker != null) {
+                    tracker.randomKills++;
+                }
+                
                 if (!roundManager.checkPlayerGetTrident(damager, round, true)) {
                     bowTimer.stopBowTimer(damager);
                 }
                 if (playerSM.role == Role.DETECTIVE) {
                     MessageHelper.detectiveKilled(round);
+                    AchievementHelper.updateAchievementProgress(player, 1, AchievementHelper.AchievementType.RANDOMKILLED_AS_DETECTIVE);
                 }
             }
         }

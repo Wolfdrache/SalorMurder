@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.wolfdrache.salormurder.achievements.AchievementHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 
@@ -93,6 +94,9 @@ public class RoundSM {
         for (Material material : lootChest.items.keySet()) {
             int amount = lootChest.items.get(material);
             ItemStack itemStack = new ItemStack(material, amount);
+            if (material == Material.EMERALD) {
+                AchievementHelper.updateAchievementProgress(player, amount, AchievementHelper.AchievementType.CLUES);
+            }
             inventory.addItem(itemStack);
         }
         inventory.remove(Material.BARRIER);

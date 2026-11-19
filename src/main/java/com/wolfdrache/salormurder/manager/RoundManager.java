@@ -23,6 +23,7 @@ import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.SalorMurder;
 import com.wolfdrache.salormurder.achievements.AchievementHelper;
+import com.wolfdrache.salormurder.achievements.AchievementTracker;
 import com.wolfdrache.salormurder.helper.MessageHelper;
 import com.wolfdrache.salormurder.helper.TabHelper;
 import com.wolfdrache.salormurder.items.NavItems;
@@ -169,12 +170,20 @@ public class RoundManager {
             }
         } else if (round.mode == RoundMode.STARTING || round.mode == RoundMode.RUNNING) {
             if (playerSM.mode == PlayerMode.PLAYING) {
+                for (Player otherPlayer : round.players.keySet()) {
+                    AchievementTracker tracker = AchievementHelper.getPlayerAchievementTracker(otherPlayer);
+                    if (tracker != null) {
+                        tracker.neededRandomKillsInRound--;
+                    }
+                }
                 PlayerStats playerStats = statsManager.getPlayerStats(player);
                 playerStats.addLoss(playerSM.role);
                 bowTimer.stopBowTimer(player);
                 checkEndRound(round);
+                AchievementHelper.updateAchievementProgress(player, 0, AchievementHelper.AchievementType.ROUNDS_PLAYED);
             }
         }
+        AchievementHelper.removePlayerAchievementTracker(player);
     }
 
     public boolean enoughPlayersToStart(RoundSM round) {
@@ -208,6 +217,7 @@ public class RoundManager {
             playerSM.mode = PlayerMode.ENDING;
             givePlayerWaitingAttributes(player);
             giveRoleItems(player);
+            AchievementHelper.updateAchievementProgress(player, 0, AchievementHelper.AchievementType.ROUNDS_PLAYED);
         }
     }
 
@@ -258,6 +268,17 @@ public class RoundManager {
                     PlayerStats playerStats = statsManager.getPlayerStats(player);
                     playerStats.addWin(winningRole);
                     coinManager.giveCoins(player, winningRole == Role.MURDERER ? Coins.MURDER_WIN : Coins.INNO_WIN);
+                    AchievementHelper.updateAchievementProgress(player, 1, winningRole.inno ? AchievementHelper.AchievementType.INNOCENT_WINS : AchievementHelper.AchievementType.MURDERER_WINS);
+                    AchievementHelper.updateAchievementProgress(player, 1, AchievementHelper.AchievementType.ROUNDS_WON);
+
+                    if (winningRole.inno) {
+                        AchievementTracker tracker = AchievementHelper.getPlayerAchievementTracker(player);
+                        if (tracker != null) {
+                            if (tracker.hasReachedNeededRandomKills()) {
+                                AchievementHelper.updateAchievementProgress(player, 1, AchievementHelper.AchievementType.WRONG_MURDER);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -303,6 +324,9 @@ public class RoundManager {
             givePlayerNormalAttributes(player);
             giveRoleItems(player);
             player.setGameMode(GameMode.ADVENTURE);
+            if (playerSM.role != Role.MURDERER) {
+                AchievementHelper.initializePlayerAchievementTracker(player, round.players.size() - 2);
+            }
         }
         MessageHelper.sendRoleTitle(round);
     }
