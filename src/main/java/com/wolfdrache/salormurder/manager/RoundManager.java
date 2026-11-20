@@ -507,8 +507,8 @@ public class RoundManager {
     }
 
     public void editRound(Player player, RoundSM round) {
-        if (getRoundByPlayer(player) != null) {
-            leavePlayer(player, false);
+        if (gameService.isPlayingAnyGame(player)) {
+            gameService.leaveCurrentGame(player);
         }
         if (round.mode != RoundMode.EDIT) {
             stopRound(round);
