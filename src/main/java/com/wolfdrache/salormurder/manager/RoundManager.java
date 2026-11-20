@@ -137,13 +137,9 @@ public class RoundManager {
                 for (Player partyMember : partyMembers) {
                     joinPlayer(partyMember, round, false);
                 }
-            } else {
-                MessageHelper.sendMessage(player, "§cNur der Party-Leader kann einer Runde beitreten.");
-                return;
             }
-        } else {
-            joinPlayer(player, round, false);
         }
+        joinPlayer(player, round, false);
     }
 
     public void leavePlayer(Player player, boolean tp) {
