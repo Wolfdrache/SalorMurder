@@ -96,9 +96,9 @@ public class RoundManager {
                 return;
             }
         }
-        if (activePlayers.containsKey(player)) {
+        if (gameService.isPlayingAnyGame(player)) {
             if (activePlayers.get(player) == round) return;
-            leavePlayer(player, false);
+            gameService.leaveCurrentGame(player);
         }
         joiningPlayers.add(player);
         if (round.mode == RoundMode.WAITING && round.hasFreeSlot()) {
