@@ -137,6 +137,7 @@ public class RoundManager {
                 for (Player partyMember : partyMembers) {
                     joinPlayer(partyMember, round, false);
                 }
+                return;
             }
         }
         joinPlayer(player, round, false);
