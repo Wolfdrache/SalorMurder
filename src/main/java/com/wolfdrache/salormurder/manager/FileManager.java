@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -185,5 +186,14 @@ public class FileManager {
             }
         }
         return new ItemStack(tridentMaterial, tridentAmount);
+    }
+
+    public List<UUID> getLeaderboard() {
+        YamlConfiguration statsConfig = YamlConfiguration.loadConfiguration(statsFile);
+        List<UUID> leaderboard = new ArrayList<>();
+        for (String uuid : statsConfig.getKeys(false)) {
+            leaderboard.add(UUID.fromString(uuid));
+        }
+        return leaderboard;
     }
 }

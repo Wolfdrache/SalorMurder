@@ -1,9 +1,10 @@
 package com.wolfdrache.salormurder;
 
+import com.wolfdrache.salormurder.models.ConfigModes;
+import com.wolfdrache.serverapi.coins.CoinService;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.milkbowl.vault.economy.Economy;
 import com.wolfdrache.murderknifes.api.MurderKnifesAPI;
 import com.wolfdrache.party.api.PartyService;
 import com.wolfdrache.salormurder.achievements.AchievementHelper;
@@ -19,12 +20,12 @@ import com.wolfdrache.serverapi.reports.ReportService;
 
 public class SalorMurder extends JavaPlugin {
     private static SalorMurder instance;
-    private Economy economy;
     private MurderKnifesAPI murderKnifes;
     private PartyService partyService;
     private ReportService reportService;
     private GameService gameService;
     private AchievementService achievementService;
+    private CoinService coinService;
 
     private FileManager fileManager;
     private MapManager mapManager;
@@ -42,12 +43,6 @@ public class SalorMurder extends JavaPlugin {
     @Override
     public void onEnable(){
         instance = this;
-        economy = setupService(Economy.class);
-        if (economy == null) {
-            getLogger().severe("Vault economy service not found! Disabling plugin.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
         partyService = setupService(PartyService.class);
         if (partyService == null) {
             getLogger().severe("Party API service not found! Disabling plugin.");
@@ -79,11 +74,17 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        coinService = setupService(CoinService.class);
+        if (coinService == null) {
+            getLogger().severe("CoinService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         fileManager = new FileManager(this);
         chatManager = new ChatManager();
         statsManager = new StatsManager(fileManager);
-        coinManager = new CoinManager(economy, fileManager, statsManager);
+        coinManager = new CoinManager(coinService, fileManager, statsManager);
         mapManager = new MapManager(fileManager);
         roundManager = new RoundManager(partyService, gameService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
 

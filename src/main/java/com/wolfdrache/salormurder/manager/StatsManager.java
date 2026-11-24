@@ -28,7 +28,7 @@ public class StatsManager {
 
     public StatsManager(FileManager fileManager) {
         this.fileManager = fileManager;
-        this.leaderBoardManager = new LeaderBoardManager(SalorMurder.getInstance(), this::getPlayerStats);
+        this.leaderBoardManager = new LeaderBoardManager(SalorMurder.getInstance(), this::getPlayerStats, fileManager.getLeaderboard());
     }
 
     public void loadPlayerStats(Player player) {

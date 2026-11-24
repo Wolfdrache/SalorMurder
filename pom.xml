@@ -58,13 +58,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.Wolfdrache</groupId>
             <artifactId>MurderKnifes</artifactId>
             <version>3da28ff96d</version>
@@ -74,7 +67,7 @@
         <dependency>
             <groupId>com.github.Wolfdrache.Party</groupId>
             <artifactId>party-api</artifactId>
-            <version>2bf4f7ba23</version>
+            <version>135bd3e10c</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

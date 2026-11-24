@@ -117,7 +117,7 @@ public class DamageListener implements Listener {
                 AchievementHelper.updateAchievementProgress(damager, 1, AchievementHelper.AchievementType.MURDERERS_KILLED);
             } else {
                 killerStats.randomKills++;
-                coinManager.giveCoins(damager, Coins.RANDOM_KILL);
+                coinManager.loseCoins(damager, Coins.RANDOM_KILL);
                 damagerSM.hasRandomKilled = true;
                 damager.getInventory().remove(NavItems.bowItem);
                 damager.getInventory().remove(NavItems.arrowItem);
