@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.wolfdrache.serverapi.gamemodes.roundManagement.IRound;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.RoundService;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,6 +46,7 @@ import com.wolfdrache.serverapi.gamemodes.GameService;
 public class RoundManager {
     private final PartyService partyService;
     private final GameService gameService;
+    private final RoundService roundService;
     private final MurderKnifesAPI murderKnifes;
     
     private final MapManager mapManager;
@@ -62,9 +65,10 @@ public class RoundManager {
 
     public final List<Player> joiningPlayers = new ArrayList<>();
 
-    public RoundManager(PartyService partyService, GameService gameService, MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
+    public RoundManager(PartyService partyService, GameService gameService, RoundService roundService, MurderKnifesAPI murderKnifes, MapManager mapManager, StatsManager statsManager, CoinManager coinManager, FileManager fileManager) {
         this.partyService = partyService;
         this.gameService = gameService;
+        this.roundService = roundService;
         this.murderKnifes = murderKnifes;
         this.mapManager = mapManager;
         this.statsManager = statsManager;
@@ -74,6 +78,15 @@ public class RoundManager {
         this.waitingLobby = fileManager.getLobbyLocation();
 
         createAllRounds();
+
+        roundService.registerPluginData(SalorMurder.getInstance(), Material.TRIDENT, "§3§lSailors§c§lMurder");
+        for (RoundSM round : rounds) {
+            roundService.registerRound(round, Material.TRIDENT, SalorMurder.getInstance());
+        }
+        roundService.registerEditFunction(this::editRound, SalorMurder.getInstance());
+        roundService.registerSaveFunction(this::saveRound, SalorMurder.getInstance());
+        roundService.registerJoinFunction(this::joinRoundS, SalorMurder.getInstance());
+        roundService.registerLeaveFunction(this::leaveRound, SalorMurder.getInstance());
     }
 
     public void setExtras(JoinSignManager joinSignManager, RoundTimer roundTimer, BowTimer bowTimer) {
@@ -87,6 +100,11 @@ public class RoundManager {
         for (MapSM map : maps) {
             rounds.add(new RoundSM(map));
         }
+    }
+
+    public void joinRoundS(Player player, IRound iRound) {
+        if (!(iRound instanceof RoundSM round)) return;
+        joinPlayer(player, round, true);
     }
 
     public void joinPlayer(Player player, RoundSM round, boolean checkParty) {
@@ -112,7 +130,7 @@ public class RoundManager {
             giveRoleItems(player);
             joinSignManager.updateSign(round);
             MessageHelper.playerJoinRound(player, round);
-            gameService.joinPlugin(player, SalorMurder.getInstance());
+            roundService.registerPlayerToRound(player, round, SalorMurder.getInstance());
             givePlayerWaitingAttributes(player);
             player.setGameMode(GameMode.ADVENTURE);
             return;
@@ -123,7 +141,7 @@ public class RoundManager {
             giveRoleItems(player);
             givePlayerSpectatorAttributes(player);
             MessageHelper.playerSpectateRound(player, round);
-            gameService.joinPlugin(player, SalorMurder.getInstance());
+            roundService.registerPlayerToRound(player, round, SalorMurder.getInstance());
             player.setGameMode(GameMode.ADVENTURE);
             return;
         }
@@ -143,6 +161,11 @@ public class RoundManager {
         joinPlayer(player, round, false);
     }
 
+    public void leaveRound(Player player, IRound iRound) {
+        if (!(iRound instanceof RoundSM)) return;
+        leavePlayer(player, true);
+    }
+
     public void leavePlayer(Player player, boolean tp) {
         if (!activePlayers.containsKey(player)) return;
         RoundSM round = activePlayers.get(player);
@@ -151,7 +174,7 @@ public class RoundManager {
         round.players.remove(player);
         activePlayers.remove(player);
         MessageHelper.playerLeaveRound(player, round);
-        gameService.leaveGame(player, SalorMurder.getInstance());
+        roundService.removePlayerFromRound(player);
         TabHelper.showPlayerToAll(round, player);
         if (tp) {
             player.teleport(fileManager.getLeaveLocation());
@@ -198,12 +221,14 @@ public class RoundManager {
         mapManager.addWorldToMap(round.map, world);
         round.time = fileManager.getTime(Time.BEFORE_START);
         round.mode = RoundMode.STARTING;
+        SalorMurder.callRoundUpdateEvent(round, RoundMode.STARTING);
         joinSignManager.replaceRoundSign(round);
         spawnPlayer(round);
     }
 
     private void endRound(RoundSM round) {
         round.mode = RoundMode.ENDING;
+        SalorMurder.callRoundUpdateEvent(round, RoundMode.ENDING);
         round.time = fileManager.getTime(Time.END);
         bowTimer.stopTimerRound(round);
         announceWinner(round);
@@ -225,6 +250,7 @@ public class RoundManager {
         round.removeAllLootChests();
         bowTimer.stopTimerRound(round);
         round.mode = RoundMode.WAITING;
+        SalorMurder.callRoundUpdateEvent(round, RoundMode.WAITING);
         round.time = fileManager.getTime(Time.LOBBY);
         round.murderer = null;
         round.detective = null;
@@ -506,13 +532,15 @@ public class RoundManager {
         resetRound(round);
     }
 
-    public void editRound(Player player, RoundSM round) {
+    public void editRound(Player player, IRound iRound) {
+        if (!(iRound instanceof RoundSM round)) return;
         if (gameService.isPlayingAnyGame(player)) {
             gameService.leaveCurrentGame(player);
         }
         if (round.mode != RoundMode.EDIT) {
             stopRound(round);
             round.mode = RoundMode.EDIT;
+            SalorMurder.callRoundUpdateEvent(round, RoundMode.EDIT);
             World world = mapManager.getOrLoadWorld(round.map);
             mapManager.addWorldToMap(round.map, world);
             joinSignManager.replaceRoundSign(round);
@@ -524,7 +552,8 @@ public class RoundManager {
         player.getInventory().clear();
     }
 
-    public void saveRound(RoundSM round) {
+    public void saveRound(IRound iRound) {
+        if (!(iRound instanceof RoundSM round)) return;
         if (round.mode == RoundMode.EDIT) {
             for (Player player : new ArrayList<>(round.players.keySet())) {
                 leavePlayer(player, true);

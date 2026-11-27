@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wolfdrache.serverapi.gamemodes.roundManagement.IRound;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.IRoundMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -15,13 +17,61 @@ import com.wolfdrache.salormurder.achievements.AchievementHelper;
 import com.wolfdrache.salormurder.items.NavItems;
 import com.wolfdrache.salormurder.models.PlayerSM.PlayerMode;
 
-public class RoundSM {
-    public static enum RoundMode {
-        WAITING,
-        STARTING,
-        RUNNING,
-        ENDING,
-        EDIT
+public class RoundSM implements IRound {
+    @Override
+    public IRoundMode getRoundMode() {
+        return mode;
+    }
+
+    @Override
+    public String getRoundName() {
+        return map.name;
+    }
+
+    @Override
+    public List<Player> getPlayersInRound() {
+        return List.copyOf(players.keySet());
+    }
+
+    public static enum RoundMode implements IRoundMode {
+        WAITING (false, true, false, false, "§eWaiting"),
+        STARTING (false, false, false, true, "§eStarting"),
+        RUNNING (false, false, false, true, "§eRunning"),
+        ENDING (false, false, true, false, "§eEnding"),
+        EDIT (true, false, false, false, "§eEdit");
+
+        private final boolean isEdit;
+        private final boolean isWaiting;
+        private final boolean isEnding;
+        private final boolean isRunning;
+        private final String modeName;
+        RoundMode(boolean isEdit, boolean isWaiting, boolean isEnding, boolean isRunning, String modeName) {
+            this.isEdit = isEdit;
+            this.isWaiting = isWaiting;
+            this.isEnding = isEnding;
+            this.isRunning = isRunning;
+            this.modeName = modeName;
+        }
+        @Override
+        public boolean isEdited() {
+            return isEdit;
+        }
+        @Override
+        public boolean isWaiting() {
+            return isWaiting;
+        }
+        @Override
+        public boolean isEnding() {
+            return isEnding;
+        }
+        @Override
+        public boolean isRunning() {
+            return isRunning;
+        }
+        @Override
+        public String getModeName() {
+            return modeName;
+        }
     }
 
     public final Map<Player, PlayerSM> players = new HashMap<>();

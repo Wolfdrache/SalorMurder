@@ -2,6 +2,11 @@ package com.wolfdrache.salormurder;
 
 import com.wolfdrache.salormurder.models.ConfigModes;
 import com.wolfdrache.serverapi.coins.CoinService;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.IRound;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.IRoundMode;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.RoundService;
+import com.wolfdrache.serverapi.gamemodes.roundManagement.RoundStatusUpdateEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,6 +29,7 @@ public class SalorMurder extends JavaPlugin {
     private PartyService partyService;
     private ReportService reportService;
     private GameService gameService;
+    private RoundService roundService;
     private AchievementService achievementService;
     private CoinService coinService;
 
@@ -61,6 +67,12 @@ public class SalorMurder extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        roundService = setupService(RoundService.class);
+        if (roundService == null) {
+            getLogger().severe("RoundService not found! Disabling plugin.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         achievementService = setupService(AchievementService.class);
         if (achievementService == null) {
             getLogger().severe("AchievementService not found! Disabling plugin.");
@@ -86,7 +98,7 @@ public class SalorMurder extends JavaPlugin {
         statsManager = new StatsManager(fileManager);
         coinManager = new CoinManager(coinService, fileManager, statsManager);
         mapManager = new MapManager(fileManager);
-        roundManager = new RoundManager(partyService, gameService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
+        roundManager = new RoundManager(partyService, gameService, roundService, murderKnifes, mapManager, statsManager, coinManager, fileManager);
 
         joinSignManager = new JoinSignManager(roundManager, fileManager);
         roundTimer = new RoundTimer(roundManager, fileManager);
@@ -149,5 +161,10 @@ public class SalorMurder extends JavaPlugin {
 
     public static SalorMurder getInstance() {
         return instance;
+    }
+
+    public static void callRoundUpdateEvent(IRound round, IRoundMode roundMode) {
+        RoundStatusUpdateEvent event = new RoundStatusUpdateEvent(instance, round, roundMode);
+        Bukkit.getPluginManager().callEvent(event);
     }
 }

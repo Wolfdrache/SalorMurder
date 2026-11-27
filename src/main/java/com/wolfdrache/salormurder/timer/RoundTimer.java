@@ -75,6 +75,7 @@ public class RoundTimer {
             XpBarTimer.updateXpBar(round, startingTime);
             if (round.time == 0) {
                 round.mode = RoundMode.RUNNING;
+                SalorMurder.callRoundUpdateEvent(round, RoundMode.RUNNING);
 
                 round.initializeLootChests();
                 roundManager.giveRoleItems((Player) round.detective);
